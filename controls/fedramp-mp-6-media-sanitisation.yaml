@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-MP-6-media-sanitisation
+  name: fedramp-mp-6-media-sanitisation
+  title: Media is sanitised prior to disposal, release, or reuse
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-MP-6-media-sanitisation enforces.
+
+  evidence:
+    - id: fedramp_mp_6_media_sanitisation
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-mp-6-media-sanitisation-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_mp_6_media_sanitisation
+    file: ../policies/fedramp-mp-6-media-sanitisation.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-mp-6-media-sanitisation.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-SC-28-protection-of-information-at-rest
+  name: fedramp-sc-28-protection-of-information-at-rest
+  title: Confidentiality and integrity of information at rest are protected
+  framework: fedramp
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-SC-28-protection-of-information-at-rest enforces.
+
+  evidence:
+    - id: fedramp_sc_28_protection_of_information_at_rest
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-sc-28-protection-of-information-at-rest-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_sc_28_protection_of_information_at_rest
+    file: ../policies/fedramp-sc-28-protection-of-information-at-rest.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-sc-28-protection-of-information-at-rest.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

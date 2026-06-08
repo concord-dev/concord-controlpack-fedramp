@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AU-9-protection-of-audit-information
+  name: fedramp-au-9-protection-of-audit-information
+  title: Audit information and audit tools are protected from unauthorised access
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AU-9-protection-of-audit-information enforces.
+
+  evidence:
+    - id: fedramp_au_9_protection_of_audit_information
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-au-9-protection-of-audit-information-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_au_9_protection_of_audit_information
+    file: ../policies/fedramp-au-9-protection-of-audit-information.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-au-9-protection-of-audit-information.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

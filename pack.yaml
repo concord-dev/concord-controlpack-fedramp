@@ -1,0 +1,73 @@
+apiVersion: concord.dev/v1
+kind: ControlPack
+metadata:
+  id: fedramp
+  name: fedramp
+  version: v0.1.0
+  framework_label: FedRAMP Moderate
+  attribution:
+    sources:
+      - usnistgov-oscal-content-fedramp
+      - gsa-fedramp-baselines
+      - nist-sp-800-53-rev5
+spec:
+  controls:
+    - FEDRAMP-AC-11-session-lock
+    - FEDRAMP-AC-12-session-termination
+    - FEDRAMP-AC-17-remote-access
+    - FEDRAMP-AC-2-account-management
+    - FEDRAMP-AC-3-access-enforcement
+    - FEDRAMP-AC-4-information-flow-enforcement
+    - FEDRAMP-AC-5-separation-of-duties
+    - FEDRAMP-AC-6-least-privilege
+    - FEDRAMP-AC-7-unsuccessful-logon-attempts
+    - FEDRAMP-AU-12-audit-generation
+    - FEDRAMP-AU-2-event-logging
+    - FEDRAMP-AU-3-content-of-audit-records
+    - FEDRAMP-AU-4-audit-log-storage-capacity
+    - FEDRAMP-AU-6-audit-review-analysis-reporting
+    - FEDRAMP-AU-9-protection-of-audit-information
+    - FEDRAMP-CA-2-control-assessments
+    - FEDRAMP-CA-7-continuous-monitoring
+    - FEDRAMP-CM-2-baseline-configuration
+    - FEDRAMP-CM-3-configuration-change-control
+    - FEDRAMP-CM-6-configuration-settings
+    - FEDRAMP-CM-7-least-functionality
+    - FEDRAMP-CP-10-system-recovery-and-reconstitution
+    - FEDRAMP-CP-2-contingency-plan
+    - FEDRAMP-CP-9-system-backup
+    - FEDRAMP-IA-2-1-mfa-privileged
+    - FEDRAMP-IA-2-2-mfa-non-privileged
+    - FEDRAMP-IA-2-identification-and-authentication
+    - FEDRAMP-IA-5-authenticator-management
+    - FEDRAMP-IR-4-incident-handling
+    - FEDRAMP-IR-6-incident-reporting
+    - FEDRAMP-IR-8-incident-response-plan
+    - FEDRAMP-MA-2-controlled-maintenance
+    - FEDRAMP-MP-4-media-storage
+    - FEDRAMP-MP-6-media-sanitisation
+    - FEDRAMP-PE-3-physical-access-control
+    - FEDRAMP-PL-2-system-security-plan
+    - FEDRAMP-PS-3-personnel-screening
+    - FEDRAMP-PS-4-personnel-termination
+    - FEDRAMP-RA-3-risk-assessment
+    - FEDRAMP-RA-5-vulnerability-monitoring
+    - FEDRAMP-SA-11-developer-testing-and-evaluation
+    - FEDRAMP-SA-9-external-system-services
+    - FEDRAMP-SC-13-cryptographic-protection
+    - FEDRAMP-SC-28-protection-of-information-at-rest
+    - FEDRAMP-SC-7-boundary-protection
+    - FEDRAMP-SC-8-transmission-confidentiality-and-integrity
+    - FEDRAMP-SI-2-flaw-remediation
+    - FEDRAMP-SI-3-malicious-code-protection
+    - FEDRAMP-SI-4-system-monitoring
+    - FEDRAMP-SI-7-software-firmware-information-integrity
+  evidence_sources:
+    - source: aws
+      version: ">=v0.1.0,<v1.0.0"
+    - source: github
+      version: ">=v0.1.0,<v1.0.0"
+    - source: okta
+      version: ">=v0.1.0,<v1.0.0"
+    - source: attestation
+      version: ">=v0.1.0,<v1.0.0"

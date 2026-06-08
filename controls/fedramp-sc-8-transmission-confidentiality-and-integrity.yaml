@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-SC-8-transmission-confidentiality-and-integrity
+  name: fedramp-sc-8-transmission-confidentiality-and-integrity
+  title: Confidentiality and integrity of transmitted information are protected
+  framework: fedramp
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-SC-8-transmission-confidentiality-and-integrity enforces.
+
+  evidence:
+    - id: fedramp_sc_8_transmission_confidentiality_and_integrity
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-sc-8-transmission-confidentiality-and-integrity-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_sc_8_transmission_confidentiality_and_integrity
+    file: ../policies/fedramp-sc-8-transmission-confidentiality-and-integrity.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-sc-8-transmission-confidentiality-and-integrity.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

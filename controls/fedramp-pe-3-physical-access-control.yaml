@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-PE-3-physical-access-control
+  name: fedramp-pe-3-physical-access-control
+  title: Physical access authorisations are enforced at access points
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-PE-3-physical-access-control enforces.
+
+  evidence:
+    - id: fedramp_pe_3_physical_access_control
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-pe-3-physical-access-control-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_pe_3_physical_access_control
+    file: ../policies/fedramp-pe-3-physical-access-control.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-pe-3-physical-access-control.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

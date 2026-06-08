@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AU-12-audit-generation
+  name: fedramp-au-12-audit-generation
+  title: System provides audit-record generation capability for all auditable events
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AU-12-audit-generation enforces.
+
+  evidence:
+    - id: fedramp_au_12_audit_generation
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-au-12-audit-generation-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_au_12_audit_generation
+    file: ../policies/fedramp-au-12-audit-generation.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-au-12-audit-generation.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-CP-10-system-recovery-and-reconstitution
+  name: fedramp-cp-10-system-recovery-and-reconstitution
+  title: System recovery and reconstitution procedures are documented and tested
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-CP-10-system-recovery-and-reconstitution enforces.
+
+  evidence:
+    - id: fedramp_cp_10_system_recovery_and_reconstitution
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-cp-10-system-recovery-and-reconstitution-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_cp_10_system_recovery_and_reconstitution
+    file: ../policies/fedramp-cp-10-system-recovery-and-reconstitution.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-cp-10-system-recovery-and-reconstitution.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

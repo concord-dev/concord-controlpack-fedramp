@@ -1,0 +1,11 @@
+{
+  "fedramp_ca_2_control_assessments": {
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "version": "1",
+    "owner": "dpo@acme.com",
+    "signers": ["dpo@acme.com"],
+    "last_review_at": "2026-01-01T00:00:00Z",
+    "expires_at": "2027-01-01T00:00:00Z",
+    "attested_fields": ["scope", "lawful_basis", "retention"]
+  }
+}

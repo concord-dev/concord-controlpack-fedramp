@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-SI-2-flaw-remediation
+  name: fedramp-si-2-flaw-remediation
+  title: Flaws are identified, reported, and corrected
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-SI-2-flaw-remediation enforces.
+
+  evidence:
+    - id: fedramp_si_2_flaw_remediation
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-si-2-flaw-remediation-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_si_2_flaw_remediation
+    file: ../policies/fedramp-si-2-flaw-remediation.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-si-2-flaw-remediation.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

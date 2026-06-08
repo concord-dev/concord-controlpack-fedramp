@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-CA-7-continuous-monitoring
+  name: fedramp-ca-7-continuous-monitoring
+  title: Continuous monitoring strategy is established and operating
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-CA-7-continuous-monitoring enforces.
+
+  evidence:
+    - id: fedramp_ca_7_continuous_monitoring
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-ca-7-continuous-monitoring-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ca_7_continuous_monitoring
+    file: ../policies/fedramp-ca-7-continuous-monitoring.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ca-7-continuous-monitoring.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

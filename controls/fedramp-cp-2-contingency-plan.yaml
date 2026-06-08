@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-CP-2-contingency-plan
+  name: fedramp-cp-2-contingency-plan
+  title: Contingency plan exists and is reviewed annually
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-CP-2-contingency-plan enforces.
+
+  evidence:
+    - id: fedramp_cp_2_contingency_plan
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-cp-2-contingency-plan-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_cp_2_contingency_plan
+    file: ../policies/fedramp-cp-2-contingency-plan.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-cp-2-contingency-plan.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

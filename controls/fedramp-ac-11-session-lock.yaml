@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AC-11-session-lock
+  name: fedramp-ac-11-session-lock
+  title: System initiates session lock after defined idle period
+  framework: fedramp
+  severity: low
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AC-11-session-lock enforces.
+
+  evidence:
+    - id: fedramp_ac_11_session_lock
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-ac-11-session-lock-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ac_11_session_lock
+    file: ../policies/fedramp-ac-11-session-lock.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ac-11-session-lock.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

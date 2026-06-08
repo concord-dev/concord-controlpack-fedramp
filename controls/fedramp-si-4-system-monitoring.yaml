@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-SI-4-system-monitoring
+  name: fedramp-si-4-system-monitoring
+  title: System is monitored to detect attacks and indicators of potential attacks
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-SI-4-system-monitoring enforces.
+
+  evidence:
+    - id: fedramp_si_4_system_monitoring
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-si-4-system-monitoring-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_si_4_system_monitoring
+    file: ../policies/fedramp-si-4-system-monitoring.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-si-4-system-monitoring.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

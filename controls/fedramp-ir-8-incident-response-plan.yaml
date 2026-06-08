@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-IR-8-incident-response-plan
+  name: fedramp-ir-8-incident-response-plan
+  title: Documented incident response plan is current and tested
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-IR-8-incident-response-plan enforces.
+
+  evidence:
+    - id: fedramp_ir_8_incident_response_plan
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-ir-8-incident-response-plan-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ir_8_incident_response_plan
+    file: ../policies/fedramp-ir-8-incident-response-plan.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ir-8-incident-response-plan.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

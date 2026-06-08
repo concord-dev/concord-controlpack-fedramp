@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-CP-9-system-backup
+  name: fedramp-cp-9-system-backup
+  title: System backups are conducted and tested per requirements
+  framework: fedramp
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-CP-9-system-backup enforces.
+
+  evidence:
+    - id: fedramp_cp_9_system_backup
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-cp-9-system-backup-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_cp_9_system_backup
+    file: ../policies/fedramp-cp-9-system-backup.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-cp-9-system-backup.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

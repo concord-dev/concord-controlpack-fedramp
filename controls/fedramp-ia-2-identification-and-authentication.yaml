@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-IA-2-identification-and-authentication
+  name: fedramp-ia-2-identification-and-authentication
+  title: System uniquely identifies and authenticates organisational users
+  framework: fedramp
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-IA-2-identification-and-authentication enforces.
+
+  evidence:
+    - id: fedramp_ia_2_identification_and_authentication
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-ia-2-identification-and-authentication-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ia_2_identification_and_authentication
+    file: ../policies/fedramp-ia-2-identification-and-authentication.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ia-2-identification-and-authentication.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

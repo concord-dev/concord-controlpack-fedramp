@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AC-6-least-privilege
+  name: fedramp-ac-6-least-privilege
+  title: Principle of least privilege is enforced for all authorized accesses
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AC-6-least-privilege enforces.
+
+  evidence:
+    - id: fedramp_ac_6_least_privilege
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-ac-6-least-privilege-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ac_6_least_privilege
+    file: ../policies/fedramp-ac-6-least-privilege.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ac-6-least-privilege.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

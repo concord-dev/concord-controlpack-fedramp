@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-RA-3-risk-assessment
+  name: fedramp-ra-3-risk-assessment
+  title: Risk assessment is conducted and updated
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-RA-3-risk-assessment enforces.
+
+  evidence:
+    - id: fedramp_ra_3_risk_assessment
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-ra-3-risk-assessment-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ra_3_risk_assessment
+    file: ../policies/fedramp-ra-3-risk-assessment.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ra-3-risk-assessment.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

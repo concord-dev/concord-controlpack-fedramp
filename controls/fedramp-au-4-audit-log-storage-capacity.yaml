@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AU-4-audit-log-storage-capacity
+  name: fedramp-au-4-audit-log-storage-capacity
+  title: System allocates adequate audit log storage capacity
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AU-4-audit-log-storage-capacity enforces.
+
+  evidence:
+    - id: fedramp_au_4_audit_log_storage_capacity
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-au-4-audit-log-storage-capacity-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_au_4_audit_log_storage_capacity
+    file: ../policies/fedramp-au-4-audit-log-storage-capacity.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-au-4-audit-log-storage-capacity.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

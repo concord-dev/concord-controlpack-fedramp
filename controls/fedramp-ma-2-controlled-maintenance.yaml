@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-MA-2-controlled-maintenance
+  name: fedramp-ma-2-controlled-maintenance
+  title: Maintenance and repair on system components are controlled and recorded
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-MA-2-controlled-maintenance enforces.
+
+  evidence:
+    - id: fedramp_ma_2_controlled_maintenance
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-ma-2-controlled-maintenance-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ma_2_controlled_maintenance
+    file: ../policies/fedramp-ma-2-controlled-maintenance.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ma-2-controlled-maintenance.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

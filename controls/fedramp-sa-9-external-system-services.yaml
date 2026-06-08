@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-SA-9-external-system-services
+  name: fedramp-sa-9-external-system-services
+  title: External system services are subject to security controls
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-SA-9-external-system-services enforces.
+
+  evidence:
+    - id: fedramp_sa_9_external_system_services
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-sa-9-external-system-services-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_sa_9_external_system_services
+    file: ../policies/fedramp-sa-9-external-system-services.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-sa-9-external-system-services.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

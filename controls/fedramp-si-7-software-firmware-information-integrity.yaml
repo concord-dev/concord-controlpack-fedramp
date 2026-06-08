@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-SI-7-software-firmware-information-integrity
+  name: fedramp-si-7-software-firmware-information-integrity
+  title: Integrity verification tools detect unauthorised changes
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-SI-7-software-firmware-information-integrity enforces.
+
+  evidence:
+    - id: fedramp_si_7_software_firmware_information_integrity
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-si-7-software-firmware-information-integrity-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_si_7_software_firmware_information_integrity
+    file: ../policies/fedramp-si-7-software-firmware-information-integrity.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-si-7-software-firmware-information-integrity.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

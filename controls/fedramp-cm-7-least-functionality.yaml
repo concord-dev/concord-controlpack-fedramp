@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-CM-7-least-functionality
+  name: fedramp-cm-7-least-functionality
+  title: System is configured to provide only essential capabilities
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-CM-7-least-functionality enforces.
+
+  evidence:
+    - id: fedramp_cm_7_least_functionality
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-cm-7-least-functionality-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_cm_7_least_functionality
+    file: ../policies/fedramp-cm-7-least-functionality.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-cm-7-least-functionality.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

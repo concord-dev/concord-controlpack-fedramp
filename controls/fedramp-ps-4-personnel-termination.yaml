@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-PS-4-personnel-termination
+  name: fedramp-ps-4-personnel-termination
+  title: Access is terminated upon personnel termination
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-PS-4-personnel-termination enforces.
+
+  evidence:
+    - id: fedramp_ps_4_personnel_termination
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-ps-4-personnel-termination-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ps_4_personnel_termination
+    file: ../policies/fedramp-ps-4-personnel-termination.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ps-4-personnel-termination.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

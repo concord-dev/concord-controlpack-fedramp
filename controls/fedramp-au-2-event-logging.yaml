@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AU-2-event-logging
+  name: fedramp-au-2-event-logging
+  title: System logs the auditable events identified by the organisation
+  framework: fedramp
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AU-2-event-logging enforces.
+
+  evidence:
+    - id: fedramp_au_2_event_logging
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-au-2-event-logging-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_au_2_event_logging
+    file: ../policies/fedramp-au-2-event-logging.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-au-2-event-logging.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

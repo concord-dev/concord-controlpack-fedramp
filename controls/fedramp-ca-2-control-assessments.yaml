@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-CA-2-control-assessments
+  name: fedramp-ca-2-control-assessments
+  title: Security controls are periodically assessed for effectiveness
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-CA-2-control-assessments enforces.
+
+  evidence:
+    - id: fedramp_ca_2_control_assessments
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-ca-2-control-assessments-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ca_2_control_assessments
+    file: ../policies/fedramp-ca-2-control-assessments.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ca-2-control-assessments.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

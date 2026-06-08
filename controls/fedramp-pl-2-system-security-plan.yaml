@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-PL-2-system-security-plan
+  name: fedramp-pl-2-system-security-plan
+  title: System security plan is documented, reviewed, and updated
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-PL-2-system-security-plan enforces.
+
+  evidence:
+    - id: fedramp_pl_2_system_security_plan
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-pl-2-system-security-plan-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_pl_2_system_security_plan
+    file: ../policies/fedramp-pl-2-system-security-plan.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-pl-2-system-security-plan.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

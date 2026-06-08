@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AU-6-audit-review-analysis-reporting
+  name: fedramp-au-6-audit-review-analysis-reporting
+  title: Audit records are reviewed and analysed for indications of inappropriate activity
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AU-6-audit-review-analysis-reporting enforces.
+
+  evidence:
+    - id: fedramp_au_6_audit_review_analysis_reporting
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-au-6-audit-review-analysis-reporting-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_au_6_audit_review_analysis_reporting
+    file: ../policies/fedramp-au-6-audit-review-analysis-reporting.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-au-6-audit-review-analysis-reporting.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

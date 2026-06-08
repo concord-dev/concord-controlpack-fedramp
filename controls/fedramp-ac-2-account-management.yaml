@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AC-2-account-management
+  name: fedramp-ac-2-account-management
+  title: Account management procedures cover provisioning, monitoring, and removal
+  framework: fedramp
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AC-2-account-management enforces.
+
+  evidence:
+    - id: fedramp_ac_2_account_management
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-ac-2-account-management-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ac_2_account_management
+    file: ../policies/fedramp-ac-2-account-management.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ac-2-account-management.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

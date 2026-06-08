@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-IA-5-authenticator-management
+  name: fedramp-ia-5-authenticator-management
+  title: Authenticator management is governed by complexity, lifetime, and reuse policy
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-IA-5-authenticator-management enforces.
+
+  evidence:
+    - id: fedramp_ia_5_authenticator_management
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-ia-5-authenticator-management-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ia_5_authenticator_management
+    file: ../policies/fedramp-ia-5-authenticator-management.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ia-5-authenticator-management.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

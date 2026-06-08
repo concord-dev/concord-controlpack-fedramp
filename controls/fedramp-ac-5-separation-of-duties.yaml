@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AC-5-separation-of-duties
+  name: fedramp-ac-5-separation-of-duties
+  title: Duties of individuals are separated as necessary to prevent malevolent activity
+  framework: fedramp
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AC-5-separation-of-duties enforces.
+
+  evidence:
+    - id: fedramp_ac_5_separation_of_duties
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-ac-5-separation-of-duties-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ac_5_separation_of_duties
+    file: ../policies/fedramp-ac-5-separation-of-duties.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ac-5-separation-of-duties.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

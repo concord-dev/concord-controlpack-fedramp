@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-MP-4-media-storage
+  name: fedramp-mp-4-media-storage
+  title: System media is physically controlled and securely stored
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-MP-4-media-storage enforces.
+
+  evidence:
+    - id: fedramp_mp_4_media_storage
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/fedramp-mp-4-media-storage-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_mp_4_media_storage
+    file: ../policies/fedramp-mp-4-media-storage.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-mp-4-media-storage.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

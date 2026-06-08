@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: FEDRAMP-AC-7-unsuccessful-logon-attempts
+  name: fedramp-ac-7-unsuccessful-logon-attempts
+  title: System limits consecutive invalid login attempts and locks the account
+  framework: fedramp
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what FEDRAMP-AC-7-unsuccessful-logon-attempts enforces.
+
+  evidence:
+    - id: fedramp_ac_7_unsuccessful_logon_attempts
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/fedramp-ac-7-unsuccessful-logon-attempts-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.fedramp.fedramp_ac_7_unsuccessful_logon_attempts
+    file: ../policies/fedramp-ac-7-unsuccessful-logon-attempts.rego
+
+  remediation:
+    runbook: docs/remediation/fedramp-ac-7-unsuccessful-logon-attempts.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false
