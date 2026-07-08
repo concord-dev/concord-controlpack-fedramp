@@ -1,8 +1,35 @@
 {
-  "fedramp_ia_2_1_mfa_privileged": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "users": [
+    {
+      "user": "<root_account>",
+      "password_enabled": false,
+      "mfa_active": true,
+      "attached_policies": [],
+      "access_keys": []
+    },
+    {
+      "user": "alice.admin",
+      "password_enabled": true,
+      "mfa_active": true,
+      "attached_policies": ["AdministratorAccess"],
+      "access_keys": []
+    },
+    {
+      "user": "dev.readonly",
+      "password_enabled": true,
+      "mfa_active": true,
+      "attached_policies": ["ReadOnlyAccess"],
+      "access_keys": []
+    },
+    {
+      "user": "batch-runner",
+      "password_enabled": false,
+      "mfa_active": false,
+      "attached_policies": ["S3WriteOnly"],
+      "access_keys": [
+        { "key_num": "1", "active": true }
+      ]
+    }
+  ]
 }

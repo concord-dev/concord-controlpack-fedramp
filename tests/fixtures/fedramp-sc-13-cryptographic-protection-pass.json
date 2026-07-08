@@ -1,8 +1,23 @@
 {
-  "fedramp_sc_13_cryptographic_protection": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-17T00:00:00Z",
+  "buckets": [
+    {
+      "name": "fedramp-data",
+      "encryption": {
+        "configured": true,
+        "rules": [
+          {"sse_algorithm": "aws:kms", "kms_key_id": "arn:aws:kms:us-east-1:111122223333:key/abcd-1111"}
+        ]
+      }
+    }
+  ],
+  "rds_instances": [
+    {
+      "identifier": "fedramp-postgres",
+      "encryption": {"configured": true, "kms_key_id": "arn:aws:kms:us-east-1:111122223333:key/abcd-1111"}
+    }
+  ],
+  "kms_keys": [
+    {"key_id": "abcd-1111", "key_state": "Enabled", "fips_validated": true}
+  ]
 }

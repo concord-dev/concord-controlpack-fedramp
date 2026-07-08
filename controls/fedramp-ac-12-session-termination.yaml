@@ -6,33 +6,65 @@ metadata:
   name: fedramp-ac-12-session-termination
   title: System automatically terminates a session after defined conditions
   framework: fedramp
+  category: Access Control
   severity: medium
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - access-control
+    - iam
+    - session
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AC-12-session-termination enforces.
+    NIST SP 800-53 Rev 5 AC-12 (Session Termination), as required by the FedRAMP
+    Moderate baseline, requires the system to automatically terminate a user
+    session after organization-defined conditions or trigger events. For
+    federated and assumed AWS access, the hard ceiling on a session is the
+    role's MaxSessionDuration: once it elapses the session ends and
+    re-authentication is required. Concord fails any IAM role scoped to
+    interactive human use whose max_session_duration_seconds exceeds the
+    3600-second (one-hour) threshold, and fails closed on any interactive role
+    that does not publish a max session duration.
+
+  rationale: |
+    Long-lived assumed sessions are a recurring FedRAMP finding because they
+    defeat automatic termination: a session opened once can persist for the AWS
+    maximum of twelve hours, long after the operator has walked away or a role
+    should have been revoked. Bounding interactive roles to one hour forces
+    periodic re-authentication and keeps the effective session aligned with
+    AC-12. Roles are scoped to interactive use via the session_type tag so
+    service roles are not falsely flagged. The control fails closed: an
+    interactive role with no published ceiling is denied rather than assumed to
+    terminate.
 
   evidence:
-    - id: fedramp_ac_12_session_termination
+    - id: iam_roles
       source: aws
-      type: aws_resource_inventory
+      type: iam_roles
       fixture: ../tests/fixtures/fedramp-ac-12-session-termination-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ac_12_session_termination
+    package: concord.fedramp.session_termination
     file: ../policies/fedramp-ac-12-session-termination.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ac-12-session-termination.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 4h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "AC-12"
+    soc2:
+      - "CC6.1"
+    hipaa:
+      - "164.312(a)(2)(iii)"
+
+  status: stable
+  blocking: true

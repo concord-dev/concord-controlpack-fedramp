@@ -6,35 +6,69 @@ metadata:
   name: fedramp-ma-2-controlled-maintenance
   title: Maintenance and repair on system components are controlled and recorded
   framework: fedramp
+  category: Maintenance
   severity: medium
-  tags: []
+  tags:
+    - fedramp
+    - maintenance
+    - media-sanitisation
+    - attestation
   owners:
-    - team: concord-dev
+    - team: it-operations
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-MA-2-controlled-maintenance enforces.
+    NIST SP 800-53 Rev 5 control MA-2 (Controlled Maintenance), required at the
+    FedRAMP Moderate baseline, requires the organisation to schedule, document,
+    and review records of maintenance, repair, and replacement of system
+    components, and to sanitise equipment of any information before it is removed
+    from the facility for off-site maintenance. Off-site maintenance and the
+    surrounding approval and record-keeping are physical and procedural
+    activities that are not observable through cloud telemetry, so Concord reads
+    a signed, version-controlled attestation of the controlled-maintenance
+    program from the repository and confirms it declares an approval process, a
+    records-retention period, explicit confirmation that media is sanitised
+    before off-site maintenance, and a recent signed review.
+
+  rationale: |
+    Maintenance is a classic side-door into an authorised system: a technician
+    with physical access, a replaced-but-not-wiped drive shipped back to a
+    vendor, or a repair performed with no record all bypass the logical controls
+    that the rest of the baseline depends on. A maintenance procedure kept as a
+    slide deck silently goes stale, so Concord anchors the evidence to a
+    git-versioned attestation whose freshness, off-site sanitisation commitment,
+    and signature are verified on every run — turning "we control maintenance"
+    into "the maintenance program is current, sanitises media before it leaves,
+    and is approved".
 
   evidence:
-    - id: fedramp_ma_2_controlled_maintenance
-      source: attestation
-      type: policy_attestation
+    - id: maintenance_records
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-ma-2-controlled-maintenance-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/controlled-maintenance.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ma_2_controlled_maintenance
+    package: concord.fedramp.ma_2
     file: ../policies/fedramp-ma-2-controlled-maintenance.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ma-2-controlled-maintenance.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "MA-2"
+    iso27001:
+      - "A.7.13"
+    soc2:
+      - "CC6.5"
+
+  status: stable
+  blocking: true

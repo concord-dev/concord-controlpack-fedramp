@@ -6,35 +6,66 @@ metadata:
   name: fedramp-ps-3-personnel-screening
   title: Personnel are screened prior to authorising access
   framework: fedramp
+  category: Personnel Security
   severity: medium
-  tags: []
+  tags:
+    - fedramp
+    - personnel-security
+    - screening
+    - attestation
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-PS-3-personnel-screening enforces.
+    NIST SP 800-53 Rev 5 control PS-3 (Personnel Screening), required at the
+    FedRAMP Moderate baseline, requires the organisation to screen individuals
+    prior to authorising access to the system and to re-screen them according to
+    defined conditions and a defined cadence. Screening is an HR and procedural
+    activity that is not observable through cloud telemetry, so Concord reads a
+    signed, version-controlled attestation of the screening program from the
+    repository and confirms it declares the screening process, the positions in
+    scope, the re-screening cadence, and a recent signed review.
+
+  rationale: |
+    Access control decides what an identity may do; screening decides whether the
+    person behind that identity should have been trusted with it in the first
+    place. Skipping background screening for a role with production access, or
+    letting a once-defined screening standard lapse as the organisation grows,
+    is the kind of gap that only surfaces after an insider incident. Concord
+    anchors the screening program to a git-versioned attestation that must name
+    the positions in scope and a re-screening cadence, and whose freshness and
+    signature are verified on every run, so an undocumented or stale program
+    fails rather than passing on paper.
 
   evidence:
-    - id: fedramp_ps_3_personnel_screening
-      source: attestation
-      type: policy_attestation
+    - id: personnel_screening
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-ps-3-personnel-screening-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/personnel-screening.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ps_3_personnel_screening
+    package: concord.fedramp.ps_3
     file: ../policies/fedramp-ps-3-personnel-screening.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ps-3-personnel-screening.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "PS-3"
+    iso27001:
+      - "A.6.1"
+    soc2:
+      - "CC1.4"
+
+  status: stable
+  blocking: true

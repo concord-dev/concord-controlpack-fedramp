@@ -6,33 +6,66 @@ metadata:
   name: fedramp-ac-3-access-enforcement
   title: System enforces approved authorisations for logical access
   framework: fedramp
+  category: Access Control
   severity: critical
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - access-control
+    - iam
+    - deny-by-default
   owners:
-    - team: concord-dev
+    - team: security-engineering
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AC-3-access-enforcement enforces.
+    NIST SP 800-53 Rev 5 AC-3 (Access Enforcement), as required by the FedRAMP
+    Moderate baseline, requires the system to enforce approved authorizations
+    for logical access to information and system resources in accordance with
+    applicable access-control policy. In AWS this rests on IAM's deny-by-default
+    model. Concord inspects the effect statements of every attached IAM policy
+    and fails any statement that subverts that model: an Allow of Action "*" on
+    Resource "*" (an explicit allow-all), or an Allow that uses NotAction or
+    NotResource, which inverts the policy into "allow everything except" and
+    re-opens the default-deny baseline as new actions or resources appear.
+
+  rationale: |
+    AWS IAM enforces approved authorizations only until a single over-broad
+    Allow statement negates the default-deny stance. The two most dangerous
+    patterns are an outright Allow of "*"/"*" and the subtle Allow +
+    NotAction/NotResource idiom, which grants every action or resource except a
+    short deny-list and therefore fails open whenever a new service appears.
+    FedRAMP assessors reviewing AC-3 look precisely for statements that break
+    the default-deny posture. The control fails closed: with no policy evidence
+    it denies rather than presuming access enforcement is intact.
 
   evidence:
-    - id: fedramp_ac_3_access_enforcement
+    - id: iam_policies
       source: aws
-      type: aws_resource_inventory
+      type: iam_policies
       fixture: ../tests/fixtures/fedramp-ac-3-access-enforcement-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ac_3_access_enforcement
+    package: concord.fedramp.access_enforcement
     file: ../policies/fedramp-ac-3-access-enforcement.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ac-3-access-enforcement.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "AC-3"
+    soc2:
+      - "CC6.1"
+      - "CC6.3"
+    pci_dss:
+      - "7.3"
+      - "7.3.3"
+
+  status: stable
+  blocking: true

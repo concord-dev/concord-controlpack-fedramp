@@ -6,33 +6,65 @@ metadata:
   name: fedramp-si-2-flaw-remediation
   title: Flaws are identified, reported, and corrected
   framework: fedramp
+  category: System and Information Integrity
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - system-and-information-integrity
+    - patch-management
+    - ssm
+    - vulnerability-management
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-SI-2-flaw-remediation enforces.
+    NIST 800-53 Rev 5 SI-2 (Flaw Remediation), as required by the FedRAMP
+    Moderate baseline, requires the organization to identify, report, and
+    correct system flaws and to install security-relevant updates within an
+    organization-defined time period. FedRAMP defines that period as 30 days
+    for high-risk vulnerabilities. Concord verifies this technically by reading
+    AWS Systems Manager (SSM) Patch Manager compliance: every managed instance
+    in the authorization boundary must report a COMPLIANT patch state, and no
+    instance may have a missing critical or security patch older than 30 days.
+  rationale: |
+    Unpatched, publicly known vulnerabilities are among the most common root
+    causes of breaches, because working exploits are widely available soon
+    after disclosure. Enforcing a 30-day ceiling on missing critical and
+    security patches, measured directly from SSM Patch Manager rather than a
+    self-attested spreadsheet, closes the window in which an attacker can
+    weaponize a known flaw. Evaluating each instance individually means a single
+    unpatched host fails the control rather than being averaged away by a
+    healthy fleet, and the fail-closed default treats an instance with no
+    reported patch state as non-compliant.
 
   evidence:
-    - id: fedramp_si_2_flaw_remediation
+    - id: patch_compliance
       source: aws
-      type: aws_resource_inventory
+      type: ssm_patch_compliance
       fixture: ../tests/fixtures/fedramp-si-2-flaw-remediation-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_si_2_flaw_remediation
+    package: concord.fedramp.si_2
     file: ../policies/fedramp-si-2-flaw-remediation.rego
 
   remediation:
     runbook: docs/remediation/fedramp-si-2-flaw-remediation.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 3h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "SI-2"
+      - "SI-2(2)"
+      - "RA-5"
+    pci_dss:
+      - "6.2"
+    soc2:
+      - "CC7.1"
+
+  status: stable
+  blocking: true

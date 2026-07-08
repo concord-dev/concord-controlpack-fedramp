@@ -6,35 +6,70 @@ metadata:
   name: fedramp-mp-6-media-sanitisation
   title: Media is sanitised prior to disposal, release, or reuse
   framework: fedramp
-  severity: medium
-  tags: []
+  category: Media Protection
+  severity: high
+  tags:
+    - fedramp
+    - media-protection
+    - sanitisation
+    - attestation
   owners:
-    - team: concord-dev
+    - team: it-operations
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-MP-6-media-sanitisation enforces.
+    NIST SP 800-53 Rev 5 control MP-6 (Media Sanitization), required at the
+    FedRAMP Moderate baseline, requires the organisation to sanitise system media
+    prior to disposal, release out of organisational control, or reuse, using
+    sanitisation techniques and procedures consistent with NIST SP 800-88. Media
+    sanitisation is a physical and procedural activity that is not observable
+    through cloud telemetry, so Concord reads a signed, version-controlled
+    attestation of the sanitisation program from the repository and confirms it
+    declares a sanitisation method that is a NIST SP 800-88 approved technique
+    (clear, purge, destroy, or cryptographic erase), a verification process, and
+    a recent signed review.
+
+  rationale: |
+    "Sanitisation" that is really a factory reset or a quick format leaves data
+    trivially recoverable, which is exactly the finding assessors look for and
+    exactly how retired drives end up leaking protected data on the resale
+    market. Naming a specific, recognised technique and requiring evidence that
+    the result is verified is what separates real destruction from a checkbox.
+    Concord validates the declared method against the NIST SP 800-88 categories
+    and anchors the evidence to a git-versioned attestation whose freshness and
+    signature are verified on every run, so an unapproved method or a stale,
+    unsigned policy fails rather than passing quietly.
 
   evidence:
-    - id: fedramp_mp_6_media_sanitisation
-      source: attestation
-      type: policy_attestation
+    - id: media_sanitisation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-mp-6-media-sanitisation-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/media-sanitisation.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_mp_6_media_sanitisation
+    package: concord.fedramp.mp_6
     file: ../policies/fedramp-mp-6-media-sanitisation.rego
 
   remediation:
     runbook: docs/remediation/fedramp-mp-6-media-sanitisation.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "MP-6"
+    hipaa:
+      - "164.310(d)(2)(i)"
+    iso27001:
+      - "A.7.14"
+    soc2:
+      - "CC6.5"
+
+  status: stable
+  blocking: true

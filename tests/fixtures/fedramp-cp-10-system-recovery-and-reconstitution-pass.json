@@ -1,11 +1,19 @@
 {
-  "fedramp_cp_10_system_recovery_and_reconstitution": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/system-recovery-reconstitution.md",
+      "title": "System Recovery and Reconstitution Procedures",
+      "owner": "Platform Reliability Lead",
+      "recovery_procedures": "Infrastructure is rebuilt from version-controlled Terraform into a clean account, databases are restored from the most recent AWS Backup recovery point, and application services are redeployed from signed container images pinned to the last-known-good release; a runbook sequences dependencies (network, data, app, edge).",
+      "reconstitution_steps": "After service is restored, the system is patched to the current CM-2 baseline, host and container images are re-scanned for indicators of compromise, secrets and credentials are rotated, configuration is validated against the approved baseline, and the ISSO signs off before the system is returned to production traffic.",
+      "last_reviewed_at": "2026-06-02",
+      "review_age_days": 33,
+      "last_tested_at": "2026-05-12",
+      "test_age_days": 54,
+      "approved_by": "isso@acme.com",
+      "signature_verified": true
+    }
+  ]
 }

@@ -1,8 +1,12 @@
 {
-  "fedramp_au_9_protection_of_audit_information": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-25T00:00:00Z",
+  "trails": [
+    {
+      "name": "org-management-trail",
+      "is_logging": true,
+      "log_file_validation_enabled": true,
+      "kms_key_id": "arn:aws:kms:us-east-1:111122223333:key/1a2b3c4d-5e6f-7081-9203-a4b5c6d7e8f9",
+      "s3_bucket_is_public": false
+    }
+  ]
 }

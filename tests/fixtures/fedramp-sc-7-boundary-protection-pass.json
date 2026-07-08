@@ -1,8 +1,29 @@
 {
-  "fedramp_sc_7_boundary_protection": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-18T08:30:00Z",
+  "groups": [
+    {
+      "id": "sg-public-alb",
+      "scope": "public",
+      "description": "Internet-facing application load balancer",
+      "ingress_rules": [
+        {"protocol": "tcp", "from_port": 443, "to_port": 443, "cidr": "0.0.0.0/0"}
+      ]
+    },
+    {
+      "id": "sg-private-app",
+      "scope": "private",
+      "description": "Internal application tier",
+      "ingress_rules": [
+        {"protocol": "tcp", "from_port": 8443, "to_port": 8443, "cidr": "10.20.0.0/16"}
+      ]
+    },
+    {
+      "id": "sg-restricted-db",
+      "scope": "restricted",
+      "description": "Database tier holding federal information",
+      "ingress_rules": [
+        {"protocol": "tcp", "from_port": 5432, "to_port": 5432, "cidr": "10.30.1.0/24"}
+      ]
+    }
+  ]
 }

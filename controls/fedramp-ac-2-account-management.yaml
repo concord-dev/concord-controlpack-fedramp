@@ -6,33 +6,67 @@ metadata:
   name: fedramp-ac-2-account-management
   title: Account management procedures cover provisioning, monitoring, and removal
   framework: fedramp
+  category: Access Control
   severity: critical
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - access-control
+    - iam
+    - account-management
   owners:
-    - team: concord-dev
+    - team: security-engineering
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AC-2-account-management enforces.
+    NIST SP 800-53 Rev 5 AC-2 (Account Management), as required by the FedRAMP
+    Moderate baseline, requires the organization to manage system accounts
+    across their full lifecycle: creation, activation, monitoring for
+    inactivity, and disabling or removal. Concord reads the AWS IAM
+    credential-report inventory and fails any account that breaks that
+    lifecycle: an account that is marked disabled yet still holds a working
+    credential, a console account or active access key that has been inactive
+    beyond the FedRAMP 90-day threshold (AC-2(3)), or an account carrying no
+    owner tag to attribute responsibility.
+
+  rationale: |
+    Dormant and orphaned accounts are among the most common footholds in a
+    FedRAMP environment: a contractor account that is "disabled" in a ticket
+    but still authenticates, an access key untouched for a year, or an account
+    with no named owner all defeat the monitoring and removal that AC-2
+    demands. FedRAMP Moderate specifically parameterizes AC-2(3) to disable
+    accounts after 90 days of inactivity, so the check enforces that window
+    directly. It fails closed: when no credential report is collected it denies
+    rather than assuming every account is properly managed.
 
   evidence:
-    - id: fedramp_ac_2_account_management
+    - id: iam_credential_report
       source: aws
-      type: aws_resource_inventory
+      type: iam_credential_report
       fixture: ../tests/fixtures/fedramp-ac-2-account-management-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ac_2_account_management
+    package: concord.fedramp.account_management
     file: ../policies/fedramp-ac-2-account-management.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ac-2-account-management.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "AC-2"
+      - "AC-2(3)"
+    soc2:
+      - "CC6.1"
+      - "CC6.2"
+      - "CC6.3"
+    pci_dss:
+      - "8.1"
+
+  status: stable
+  blocking: true

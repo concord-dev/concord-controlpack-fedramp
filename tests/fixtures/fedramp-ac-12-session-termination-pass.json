@@ -1,8 +1,29 @@
 {
-  "fedramp_ac_12_session_termination": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-28T14:00:00Z",
+  "roles": [
+    {
+      "role_name": "console-admin",
+      "arn": "arn:aws:iam::123456789012:role/console-admin",
+      "tags": {
+        "session_type": "interactive"
+      },
+      "max_session_duration_seconds": 3600
+    },
+    {
+      "role_name": "analyst-portal",
+      "arn": "arn:aws:iam::123456789012:role/analyst-portal",
+      "tags": {
+        "session_type": "interactive"
+      },
+      "max_session_duration_seconds": 1800
+    },
+    {
+      "role_name": "batch-etl",
+      "arn": "arn:aws:iam::123456789012:role/batch-etl",
+      "tags": {
+        "session_type": "service"
+      },
+      "max_session_duration_seconds": 43200
+    }
+  ]
 }

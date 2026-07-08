@@ -4,37 +4,69 @@ kind: Control
 metadata:
   id: FEDRAMP-RA-3-risk-assessment
   name: fedramp-ra-3-risk-assessment
-  title: Risk assessment is conducted and updated
+  title: Risk assessment is conducted, documented, and updated
   framework: fedramp
+  category: Risk Assessment
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - risk-assessment
+    - attestation
+    - policy
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-RA-3-risk-assessment enforces.
+    NIST 800-53 Rev 5 RA-3 (FedRAMP Moderate) requires the organization to
+    conduct a risk assessment of the system, document its results, and update
+    it on a defined cadence and whenever significant changes occur. The
+    assessment artifact itself is auditable evidence, so Concord reads the
+    version-controlled risk-assessment document from the repository and
+    confirms it declares its methodology, its scope, the mechanism by which
+    findings are tracked, and the date it was last performed, that the
+    assessment is no older than one year, and that it carries a verified
+    signature.
+
+  rationale: |
+    A risk assessment that lives in a slide deck or a stale wiki page
+    silently drifts out of date, and an undated or unsigned assessment
+    cannot be trusted as the basis for authorization decisions. Anchoring
+    the evidence to a git-versioned document lets Concord verify on every run
+    that the methodology and scope are declared, that findings feed a
+    tracking mechanism (the POA&M), that the assessment was refreshed within
+    the last year, and that it was approved — turning "we assess risk" into
+    proof that the current, signed assessment is genuinely current.
 
   evidence:
-    - id: fedramp_ra_3_risk_assessment
-      source: attestation
-      type: policy_attestation
+    - id: risk_assessment
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-ra-3-risk-assessment-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/risk-assessment.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ra_3_risk_assessment
+    package: concord.fedramp.ra_3_risk_assessment
     file: ../policies/fedramp-ra-3-risk-assessment.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ra-3-risk-assessment.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "RA-3"
+    soc2:
+      - "CC3.1"
+      - "CC3.2"
+    iso27001:
+      - "A.5.5"
+
+  status: stable
+  blocking: true

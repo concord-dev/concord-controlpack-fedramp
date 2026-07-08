@@ -6,33 +6,56 @@ metadata:
   name: fedramp-au-12-audit-generation
   title: System provides audit-record generation capability for all auditable events
   framework: fedramp
+  category: Audit and Accountability
   severity: high
-  tags: []
+  tags: [fedramp, fedramp-moderate, audit, logging, cloudtrail]
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AU-12-audit-generation enforces.
-
+    NIST 800-53 AU-12 (Audit Record Generation), as required by the FedRAMP
+    Moderate baseline, requires the system to provide audit-record generation
+    capability for the defined auditable events at every in-scope component,
+    across the whole system boundary. Concord verifies that AWS CloudTrail is
+    configured with at least one multi-region trail that is actively logging, so
+    that every region and every account component generates audit records for
+    control-plane activity. A trail that is missing, single-region, or stopped
+    leaves parts of the boundary with no audit-generation capability, and the
+    check fails closed.
+  rationale: |
+    AU-12 is what turns the abstract list of auditable events from AU-2 into an
+    actual, always-on generation capability that spans the entire deployment. A
+    single-region trail generates records for only one region and silently omits
+    activity everywhere else, while a stopped trail generates nothing at all.
+    A multi-region CloudTrail trail that is enabled and logging is the
+    account-wide mechanism that guarantees every management API call in every
+    region produces an attributable audit record, which is the precondition for
+    the review, protection, and retention controls that build on it. Concord
+    fails closed when no qualifying trail is present.
   evidence:
-    - id: fedramp_au_12_audit_generation
+    - id: audit_trail
       source: aws
-      type: aws_resource_inventory
+      type: audit_trail_status
       fixture: ../tests/fixtures/fedramp-au-12-audit-generation-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_au_12_audit_generation
+    package: concord.fedramp.au_12
     file: ../policies/fedramp-au-12-audit-generation.rego
+
+  mappings:
+    nist_800_53: ["AU-12", "AU-2", "AU-3"]
+    pci_dss: ["10.1", "10.2.1"]
+    soc2: ["CC7.2"]
+    cis_aws: ["3.1"]
 
   remediation:
     runbook: docs/remediation/fedramp-au-12-audit-generation.md
     auto_fix: false
     estimated_effort: 30m
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true

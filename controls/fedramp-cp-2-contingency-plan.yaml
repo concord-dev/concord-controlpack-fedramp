@@ -4,37 +4,73 @@ kind: Control
 metadata:
   id: FEDRAMP-CP-2-contingency-plan
   name: fedramp-cp-2-contingency-plan
-  title: Contingency plan exists and is reviewed annually
+  title: A contingency plan with recovery objectives is current, signed, and tested
   framework: fedramp
+  category: Contingency Planning
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - contingency-planning
+    - business-continuity
+    - policy
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-CP-2-contingency-plan enforces.
+    NIST SP 800-53 Rev 5 CP-2 (Contingency Plan) requires an information
+    system contingency plan that identifies essential missions and business
+    functions, recovery objectives, roles and responsibilities with assigned
+    contact information, and activation criteria, and requires the plan to be
+    reviewed and updated on a defined cadence. FedRAMP Moderate expects the
+    plan to be exercised (tested) at least annually. Concord reads the
+    version-controlled contingency plan from the repository and confirms it
+    declares the roles and responsibilities, the recovery objectives (RTO and
+    RPO), the activation criteria, a recent test, and a recent signed review.
+
+  rationale: |
+    A contingency plan proves its worth only in the minutes after an outage,
+    when there is no time to work out who declares an incident, what "restored"
+    means, or how long the business can tolerate being down. CP-2 pairs the
+    written plan with hard recovery objectives (RTO/RPO) and requires it to be
+    tested, because a plan that has never been rehearsed usually fails on
+    first contact with a real disaster. Concord anchors the evidence to a
+    git-versioned plan whose review freshness, test freshness, and cosign
+    signature are all verified on every run, so an assessor sees the plan is
+    complete, current, exercised, and approved rather than merely on file.
 
   evidence:
-    - id: fedramp_cp_2_contingency_plan
-      source: attestation
-      type: policy_attestation
+    - id: contingency_plan_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-cp-2-contingency-plan-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/contingency-plan.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_cp_2_contingency_plan
+    package: concord.fedramp.cp_2
     file: ../policies/fedramp-cp-2-contingency-plan.rego
 
   remediation:
     runbook: docs/remediation/fedramp-cp-2-contingency-plan.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "CP-2"
+    soc2:
+      - "A1.2"
+      - "A1.3"
+      - "CC7.5"
+    iso27001:
+      - "A.5.29"
+      - "A.5.30"
+
+  status: stable
+  blocking: true

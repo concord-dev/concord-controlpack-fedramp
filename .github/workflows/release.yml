@@ -1,0 +1,71 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE: ghcr.io/concord-dev/concord-controlpack-fedramp
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.11'
+      - name: install concord
+        run: go install github.com/concord-dev/concord/cmd/concord@v0.1.0
+      - name: control lint (gate — a pack that fails lint cannot release)
+        run: |
+          export PATH="$(go env GOPATH)/bin:$PATH"
+          concord control lint .
+
+      - uses: oras-project/setup-oras@v1
+        with:
+          version: 1.2.0
+
+      - uses: sigstore/cosign-installer@v3
+        with:
+          cosign-release: v2.4.0
+
+      - name: Pack contents
+        run: tar -czf controlpack.tar.gz pack.yaml controls policies tests
+
+      - name: Login to ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | oras login -u ${{ github.actor }} --password-stdin "${REGISTRY}"
+
+      - name: Push OCI artifact
+        id: push
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF#refs/tags/}"
+          oras push "${IMAGE}:${TAG}" \
+            --artifact-type application/vnd.concord.controlpack.v1 \
+            --annotation "org.concord.dev.artifact.kind=controlpack" \
+            --annotation "org.concord.dev.controlpack.framework=fedramp" \
+            --annotation "org.concord.dev.controlpack.evidence_sources=aws,github,okta" \
+            --annotation "org.opencontainers.image.title=concord-controlpack-fedramp" \
+            --annotation "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
+            --annotation "org.opencontainers.image.revision=${GITHUB_SHA}" \
+            --annotation "org.opencontainers.image.version=${TAG}" \
+            controlpack.tar.gz:application/vnd.concord.controlpack.v1.tar.gz
+          DIGEST="$(oras resolve "${IMAGE}:${TAG}")"
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
+
+      - name: Cosign sign (keyless)
+        run: cosign sign --yes "${IMAGE}@${{ steps.push.outputs.digest }}"
+
+      - name: Verify signature
+        run: |
+          cosign verify \
+            --certificate-identity-regexp "^https://github\.com/${GITHUB_REPOSITORY}/\.github/workflows/.*@refs/tags/.*$" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${IMAGE}@${{ steps.push.outputs.digest }}"

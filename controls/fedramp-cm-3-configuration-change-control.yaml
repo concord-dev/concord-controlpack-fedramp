@@ -4,37 +4,68 @@ kind: Control
 metadata:
   id: FEDRAMP-CM-3-configuration-change-control
   name: fedramp-cm-3-configuration-change-control
-  title: Configuration changes are tracked, reviewed, approved, and audited
+  title: Configuration changes are tracked, reviewed, approved, and reversible
   framework: fedramp
+  category: Configuration Management
   severity: medium
-  tags: []
+  tags:
+    - fedramp
+    - change-control
+    - attestation
+    - policy
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-CM-3-configuration-change-control enforces.
+    NIST 800-53 Rev 5 CM-3 (FedRAMP Moderate) requires changes to the system
+    to be proposed and documented, reviewed and approved or disapproved with
+    explicit consideration of security impact, tested before implementation,
+    and to have a documented means of backing the change out. Concord reads
+    the version-controlled change-control procedure from the repository and
+    confirms it declares the change-approval process, the pre-implementation
+    testing requirement, and the rollback procedure, that it was reviewed
+    within the last year, and that it carries a verified signature.
+
+  rationale: |
+    Unmanaged change is one of the most common causes of both outages and
+    security regressions: an unreviewed change can weaken a control, and a
+    change with no rollback plan turns a bad deploy into an incident. CM-3
+    exists to force security-impact review, testing, and reversibility into
+    the change path. Anchoring the check to a git-versioned, signed procedure
+    lets Concord confirm on every run that the approval process, testing gate,
+    and rollback plan are documented and current, rather than trusting that a
+    change board operates the way a slide once claimed.
 
   evidence:
-    - id: fedramp_cm_3_configuration_change_control
-      source: attestation
-      type: policy_attestation
+    - id: change_control
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-cm-3-configuration-change-control-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/change-control.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_cm_3_configuration_change_control
+    package: concord.fedramp.cm_3_configuration_change_control
     file: ../policies/fedramp-cm-3-configuration-change-control.rego
 
   remediation:
     runbook: docs/remediation/fedramp-cm-3-configuration-change-control.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "CM-3"
+      - "CM-4"
+    soc2:
+      - "CC8.1"
+    iso27001:
+      - "A.8.32"
+
+  status: stable
+  blocking: true

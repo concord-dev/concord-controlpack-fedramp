@@ -1,11 +1,16 @@
 {
-  "fedramp_ps_3_personnel_screening": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/personnel-screening.md",
+      "title": "Personnel Screening Policy",
+      "screening_process": "All candidates undergo identity verification, a criminal background check, and employment/education verification through an accredited provider before a start date is confirmed; results are adjudicated against documented suitability criteria.",
+      "positions_in_scope": "All employees and contractors with logical or physical access to the system, with enhanced screening for privileged and public-trust positions.",
+      "rescreening_cadence": "Privileged-role holders are re-screened every 5 years and on role change; all others per contractual and regulatory triggers.",
+      "last_reviewed_at": "2026-06-02T00:00:00Z",
+      "signature_verified": true,
+      "approved_by": "chro@acme.com"
+    }
+  ]
 }

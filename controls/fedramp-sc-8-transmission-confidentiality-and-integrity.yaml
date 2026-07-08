@@ -6,33 +6,66 @@ metadata:
   name: fedramp-sc-8-transmission-confidentiality-and-integrity
   title: Confidentiality and integrity of transmitted information are protected
   framework: fedramp
+  category: System and Communications Protection
   severity: critical
-  tags: []
+  tags:
+    - fedramp
+    - system-and-communications-protection
+    - encryption
+    - transmission
+    - tls
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-SC-8-transmission-confidentiality-and-integrity enforces.
+    NIST 800-53 Rev 5 SC-8 (Transmission Confidentiality and Integrity), with
+    enhancement SC-8(1) (Cryptographic Protection), as required by the FedRAMP
+    Moderate baseline, requires the system to protect the confidentiality and
+    integrity of transmitted information using approved cryptography. Concord
+    inspects the two endpoints that carry information across the authorization
+    boundary in a typical AWS estate: S3 buckets and Elastic Load Balancer
+    listeners. Every bucket must carry a policy that denies requests where
+    aws:SecureTransport is false, and every listener must speak HTTPS/TLS with a
+    security policy whose minimum negotiated protocol is TLS 1.2. Plaintext
+    listeners, weak TLS policies, and buckets without the SecureTransport deny
+    all fail.
+  rationale: |
+    AWS permits TLS but does not force it — an S3 bucket without a
+    SecureTransport deny will serve federal information over plaintext HTTP, and
+    an ELB listener pinned to an ELBSecurityPolicy that still allows TLS 1.0/1.1
+    is exposed to well-known downgrade and BEAST-class attacks. FedRAMP requires
+    FIPS-validated cryptography for data in transit, so the enforcement
+    mechanism (a bucket-policy deny and a TLS-1.2-minimum listener policy) must
+    be present, not merely available. The check fails closed: missing evidence
+    or an unrecognised TLS policy denies rather than passes.
 
   evidence:
-    - id: fedramp_sc_8_transmission_confidentiality_and_integrity
+    - id: tls_endpoints
       source: aws
-      type: aws_resource_inventory
+      type: aws_tls_endpoints
       fixture: ../tests/fixtures/fedramp-sc-8-transmission-confidentiality-and-integrity-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_sc_8_transmission_confidentiality_and_integrity
+    package: concord.fedramp.sc_8
     file: ../policies/fedramp-sc-8-transmission-confidentiality-and-integrity.rego
 
   remediation:
     runbook: docs/remediation/fedramp-sc-8-transmission-confidentiality-and-integrity.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "SC-8"
+      - "SC-8(1)"
+    hipaa:
+      - "164.312(e)(2)(ii)"
+    soc2:
+      - "CC6.7"
+
+  status: stable
+  blocking: true

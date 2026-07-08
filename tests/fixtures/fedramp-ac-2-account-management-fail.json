@@ -1,8 +1,53 @@
 {
-  "fedramp_ac_2_account_management": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "fetched_at": "2026-06-28T10:00:00Z",
+  "generated_at": "2026-06-28T09:55:00Z",
+  "users": [
+    {
+      "user": "contractor-old",
+      "arn": "arn:aws:iam::123456789012:user/contractor-old",
+      "enabled": false,
+      "password_enabled": true,
+      "password_last_used_days_ago": 15,
+      "mfa_active": true,
+      "access_keys": [
+        {"active": true, "last_used_days_ago": 15}
+      ],
+      "tags": {
+        "owner": "vendor-liaison@agency.gov"
+      }
+    },
+    {
+      "user": "jsmith",
+      "arn": "arn:aws:iam::123456789012:user/jsmith",
+      "enabled": true,
+      "password_enabled": true,
+      "password_last_used_days_ago": 210,
+      "mfa_active": true,
+      "access_keys": [],
+      "tags": {
+        "owner": "jsmith@agency.gov"
+      }
+    },
+    {
+      "user": "legacy-batch",
+      "arn": "arn:aws:iam::123456789012:user/legacy-batch",
+      "enabled": true,
+      "password_enabled": false,
+      "access_keys": [
+        {"active": true, "last_used_days_ago": 400}
+      ],
+      "tags": {
+        "owner": "ops@agency.gov"
+      }
+    },
+    {
+      "user": "orphan-svc",
+      "arn": "arn:aws:iam::123456789012:user/orphan-svc",
+      "enabled": true,
+      "password_enabled": true,
+      "password_last_used_days_ago": 3,
+      "mfa_active": false,
+      "access_keys": []
+    }
+  ]
 }

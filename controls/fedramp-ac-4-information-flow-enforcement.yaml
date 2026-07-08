@@ -4,35 +4,76 @@ kind: Control
 metadata:
   id: FEDRAMP-AC-4-information-flow-enforcement
   name: fedramp-ac-4-information-flow-enforcement
-  title: Information flow control enforces approved authorisations between source and destination
+  title: Information flow between security zones is governed by a current, signed enforcement policy
   framework: fedramp
+  category: Access Control
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - access-control
+    - information-flow
+    - network-segmentation
+    - policy
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AC-4-information-flow-enforcement enforces.
+    NIST SP 800-53 Rev 5 AC-4 (Information Flow Enforcement) requires the
+    system to enforce approved authorizations for controlling the flow of
+    information within the system and between connected systems, based on
+    defined information flow control policies. FedRAMP Moderate mandates a
+    documented policy that identifies the security zones (authorization
+    boundary, data-classification tiers, DMZ/internal segments), the approved
+    flows between them, and the mechanisms that enforce those flows (security
+    groups, network ACLs, firewalls, gateways, proxies). Concord reads the
+    version-controlled flow-control policy from the repository and confirms it
+    declares the flow-control policy statement, the boundary/zone definitions,
+    the enforcement mechanisms, and a recent signed review.
+
+  rationale: |
+    Information flow enforcement is the control that keeps a low-trust segment
+    from talking directly to a high-value data store; when it is undocumented
+    or stale, segmentation drifts and an attacker who lands in the DMZ reaches
+    the crown jewels unimpeded. FedRAMP assessors test AC-4 by reconciling the
+    documented approved flows against the actual boundary configuration, so a
+    policy that lives in a slide deck or has not been reviewed since the last
+    ATO is a finding. Concord anchors the evidence to a git-versioned document
+    whose freshness and cosign signature are verified on every run, turning
+    "we segment our network" into "the approved flows are documented, current,
+    and signed".
 
   evidence:
-    - id: fedramp_ac_4_information_flow_enforcement
-      source: aws
-      type: aws_resource_inventory
+    - id: flow_control_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-ac-4-information-flow-enforcement-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/information-flow-enforcement.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ac_4_information_flow_enforcement
+    package: concord.fedramp.ac_4
     file: ../policies/fedramp-ac-4-information-flow-enforcement.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ac-4-information-flow-enforcement.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "AC-4"
+    soc2:
+      - "CC6.6"
+      - "CC6.1"
+    iso27001:
+      - "A.8.22"
+      - "A.8.23"
+
+  status: stable
+  blocking: true

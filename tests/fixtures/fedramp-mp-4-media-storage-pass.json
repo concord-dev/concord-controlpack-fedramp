@@ -1,11 +1,16 @@
 {
-  "fedramp_mp_4_media_storage": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/media-storage.md",
+      "title": "System Media Storage Policy",
+      "storage_controls": "Backup tapes and removable media are stored in a locked, access-controlled media safe within the primary data centre cage; printed system output is stored in locked cabinets.",
+      "media_inventory": "A media inventory is maintained in the asset register and reconciled quarterly; each item is bar-coded and logged on check-in and check-out.",
+      "access_restrictions": "Access to stored media is restricted to the IT operations team via badge and safe combination, reviewed quarterly.",
+      "last_reviewed_at": "2026-06-05T00:00:00Z",
+      "signature_verified": true,
+      "approved_by": "ciso@acme.com"
+    }
+  ]
 }

@@ -6,33 +6,58 @@ metadata:
   name: fedramp-au-4-audit-log-storage-capacity
   title: System allocates adequate audit log storage capacity
   framework: fedramp
+  category: Audit and Accountability
   severity: medium
-  tags: []
+  tags: [fedramp, fedramp-moderate, audit, retention, cloudwatch]
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AU-4-audit-log-storage-capacity enforces.
-
+    NIST 800-53 AU-4 (Audit Log Storage Capacity), as required by the FedRAMP
+    Moderate baseline, requires the system to allocate audit log storage
+    capacity sufficient to retain records for the organisation-defined period
+    and to reduce the likelihood of storage being exceeded. Concord verifies
+    that every audit-log CloudWatch log group has an explicit retention period
+    at or above the organisation-defined floor and that any S3 lifecycle rule
+    used for long-term overflow storage does not expire records earlier than
+    that floor. Each log group below the threshold is reported separately, and
+    the check fails closed when no storage-capacity mechanism is configured at
+    all.
+  rationale: |
+    Audit records are only useful if the system reserves enough storage to keep
+    them for the period reviewers and investigators need. A CloudWatch log group
+    with a short or missing retention window silently deletes history and can
+    also let unbounded ingestion pressure other workloads, while an S3 lifecycle
+    rule that expires objects too early quietly discards the archived overflow.
+    Requiring an explicit retention floor on every audit log group, plus a
+    lifecycle policy on any archive bucket, demonstrates that capacity has been
+    deliberately planned rather than left to default. Concord fails closed when
+    no capacity mechanism exists, because an unmanaged log store cannot be shown
+    to satisfy AU-4.
   evidence:
-    - id: fedramp_au_4_audit_log_storage_capacity
+    - id: audit_retention
       source: aws
-      type: aws_resource_inventory
+      type: log_retention_status
       fixture: ../tests/fixtures/fedramp-au-4-audit-log-storage-capacity-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_au_4_audit_log_storage_capacity
+    package: concord.fedramp.au_4
     file: ../policies/fedramp-au-4-audit-log-storage-capacity.rego
+
+  mappings:
+    nist_800_53: ["AU-4", "AU-11"]
+    pci_dss: ["10.7", "10.5.1"]
+    soc2: ["CC7.2"]
+    cis_aws: ["3.4"]
 
   remediation:
     runbook: docs/remediation/fedramp-au-4-audit-log-storage-capacity.md
     auto_fix: false
     estimated_effort: 30m
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true

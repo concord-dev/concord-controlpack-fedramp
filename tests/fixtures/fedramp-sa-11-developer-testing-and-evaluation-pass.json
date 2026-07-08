@@ -1,11 +1,16 @@
 {
-  "fedramp_sa_11_developer_testing_and_evaluation": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/developer-testing.md",
+      "title": "Developer Security Testing and Evaluation Plan",
+      "testing_types": ["SAST (CodeQL)", "DAST (OWASP ZAP)", "SCA / dependency scanning (Trivy)", "secret scanning"],
+      "frequency": "SAST and SCA run on every pull request in CI; DAST run nightly against staging",
+      "last_performed_at": "2026-06-24T00:00:00Z",
+      "remediation_tracking": "Findings triaged into the backlog and tracked to closure with severity-based SLAs; criticals block release",
+      "signature_verified": true,
+      "approved_by": "head-of-engineering@acme.com"
+    }
+  ]
 }

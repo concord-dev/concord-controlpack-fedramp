@@ -1,11 +1,18 @@
 {
-  "fedramp_ac_5_separation_of_duties": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/separation-of-duties.md",
+      "title": "Separation of Duties Matrix",
+      "owner": "Chief Information Security Officer",
+      "duties_matrix": "A role-to-duty matrix maps each sensitive function to distinct roles: change authoring vs. change approval, deployment to production vs. IAM policy administration, audit-log administration vs. audit-log review, and access-request approval vs. access-request fulfilment. No single role holds both sides of any pair.",
+      "conflicting_roles_identified": "Developer + production-deployer, security-log-administrator + security-log-reviewer, and access-approver + access-fulfiller are documented as mutually exclusive and enforced through distinct Okta groups.",
+      "review_process": "The matrix is reviewed quarterly by the security team and re-approved annually by the control owner; conflicts surfaced by the quarterly access-review campaign are remediated within 30 days and tracked in the access-review workflow.",
+      "last_reviewed_at": "2026-06-01",
+      "review_age_days": 40,
+      "approved_by": "ciso@acme.com",
+      "signature_verified": true
+    }
+  ]
 }

@@ -1,11 +1,18 @@
 {
-  "fedramp_ir_6_incident_reporting": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/incident-reporting.md",
+      "title": "Incident Reporting Procedure",
+      "owner": "Chief Information Security Officer",
+      "reporting_timeframes": "Confirmed incidents are reported to US-CERT within 1 hour of determination, to the Authorizing Official and FedRAMP ISSO within 1 hour, and status updates are provided at least daily until closure; suspected incidents are internally reported within 30 minutes of detection.",
+      "authorities_notified": "US-CERT/CISA (primary federal authority), the Authorizing Official (AO), the FedRAMP PMO/ISSO, and, where personal data is involved, affected agency customers per their contracts.",
+      "escalation_path": "On-call responder -> Incident Commander -> CISO -> AO and FedRAMP ISSO; the CISO or delegate is the designated reporter to US-CERT and confirms submission of the report ticket.",
+      "last_reviewed_at": "2026-06-04",
+      "review_age_days": 31,
+      "approved_by": "ciso@acme.com",
+      "signature_verified": true
+    }
+  ]
 }

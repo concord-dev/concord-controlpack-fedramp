@@ -6,33 +6,68 @@ metadata:
   name: fedramp-ac-17-remote-access
   title: Usage restrictions and configuration for remote access are enforced
   framework: fedramp
+  category: Access Control
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - access-control
+    - network-security
+    - remote-access
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AC-17-remote-access enforces.
+    NIST SP 800-53 Rev 5 AC-17 (Remote Access), as required by the FedRAMP
+    Moderate baseline, requires the organization to establish and enforce usage
+    restrictions and configuration requirements for each type of remote access,
+    including routing through managed access-control points and protecting
+    confidentiality and integrity with cryptography (AC-17(2)). Concord inspects
+    every security group and fails any ingress rule that exposes a
+    remote-administration port (SSH 22, RDP 3389) directly to the Internet
+    (0.0.0.0/0 or ::/0), and any rule marked as remote administrative access
+    that is not confirmed to be encrypted.
+
+  rationale: |
+    An SSH or RDP port open to 0.0.0.0/0 is one of the highest-signal findings
+    an assessor can identify: it hands every host on the Internet a login prompt
+    to the authorization boundary and bypasses the managed access points AC-17
+    requires. Equally, an administrative path that cannot demonstrate encryption
+    exposes privileged credentials to interception. By requiring that remote
+    administration is both restricted to trusted sources and cryptographically
+    protected, the control enforces the intent of AC-17 rather than checking a
+    single port. It fails closed: a rule that does not affirm encryption is
+    denied rather than presumed safe.
 
   evidence:
-    - id: fedramp_ac_17_remote_access
+    - id: security_groups
       source: aws
-      type: aws_resource_inventory
+      type: security_groups
       fixture: ../tests/fixtures/fedramp-ac-17-remote-access-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ac_17_remote_access
+    package: concord.fedramp.remote_access
     file: ../policies/fedramp-ac-17-remote-access.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ac-17-remote-access.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "AC-17"
+      - "AC-17(2)"
+    soc2:
+      - "CC6.6"
+      - "CC6.7"
+    pci_dss:
+      - "1.3.1"
+      - "2.3"
+
+  status: stable
+  blocking: true

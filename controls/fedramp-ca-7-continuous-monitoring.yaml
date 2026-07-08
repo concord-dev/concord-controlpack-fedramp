@@ -6,35 +6,69 @@ metadata:
   name: fedramp-ca-7-continuous-monitoring
   title: Continuous monitoring strategy is established and operating
   framework: fedramp
+  category: Assessment, Authorization, and Monitoring
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - continuous-monitoring
+    - aws-config
+    - guardduty
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-CA-7-continuous-monitoring enforces.
+    NIST 800-53 Rev 5 CA-7 (FedRAMP Moderate) requires an ongoing monitoring
+    capability that maintains situational awareness of the security and
+    privacy posture across the authorization boundary, including monitoring
+    of system configurations and the detection of threats. Concord verifies
+    this technically in AWS: the AWS Config recorder must be enabled and
+    recording in every active region so configuration state is captured
+    continuously, and Amazon GuardDuty must be enabled in every active region
+    so threats and anomalous activity are detected continuously. The check
+    fails closed if no evidence is collected, if no active regions are
+    reported, if any region's recorder is stopped, or if any region lacks an
+    enabled detector.
+
+  rationale: |
+    FedRAMP treats continuous monitoring as the ongoing proof that an
+    authorization remains valid, not a point-in-time snapshot. A written
+    ConMon strategy provides no assurance unless the underlying telemetry is
+    actually flowing: if the AWS Config recorder is stopped in a region,
+    configuration drift there is invisible; if GuardDuty is disabled,
+    reconnaissance, credential abuse, and malware activity go undetected.
+    Anchoring the control to the live state of Config and GuardDuty across
+    every active region turns "we monitor continuously" into an assertion
+    that can be falsified on every run, and failing closed prevents an
+    unmonitored region from silently passing.
 
   evidence:
-    - id: fedramp_ca_7_continuous_monitoring
-      source: attestation
-      type: policy_attestation
+    - id: continuous_monitoring
+      source: aws
+      type: config_recorder_status
       fixture: ../tests/fixtures/fedramp-ca-7-continuous-monitoring-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ca_7_continuous_monitoring
+    package: concord.fedramp.ca_7_continuous_monitoring
     file: ../policies/fedramp-ca-7-continuous-monitoring.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ca-7-continuous-monitoring.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "CA-7"
+      - "CA-7(4)"
+    soc2:
+      - "CC4.1"
+      - "CC7.1"
+    iso27001:
+      - "A.5.36"
+
+  status: stable
+  blocking: true

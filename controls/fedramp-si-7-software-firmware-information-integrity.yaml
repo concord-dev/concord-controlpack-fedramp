@@ -6,33 +6,67 @@ metadata:
   name: fedramp-si-7-software-firmware-information-integrity
   title: Integrity verification tools detect unauthorised changes
   framework: fedramp
+  category: System and Information Integrity
   severity: medium
-  tags: []
+  tags:
+    - fedramp
+    - system-and-information-integrity
+    - integrity
+    - cloudtrail
+    - config-drift
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-SI-7-software-firmware-information-integrity enforces.
+    NIST 800-53 Rev 5 SI-7 (Software, Firmware, and Information Integrity),
+    with enhancement SI-7(1) (Integrity Checks), as required by the FedRAMP
+    Moderate baseline, requires the organization to employ integrity
+    verification tools to detect unauthorized changes to software, firmware,
+    and information. Concord verifies the two AWS mechanisms that provide this
+    assurance: every CloudTrail trail must have log-file integrity validation
+    enabled (so tampering with the audit record is detectable), and AWS Config
+    must have an active recorder (so unauthorized configuration drift is
+    detected). A trail without log-file validation, or a Config recorder that
+    is not recording, fails the control.
+  rationale: |
+    Integrity controls are only meaningful if the record used to detect
+    tampering is itself tamper-evident: CloudTrail log-file validation produces
+    digitally signed digests so that any modification or deletion of audit logs
+    is detectable, and AWS Config continuously records resource configuration so
+    that drift from the approved baseline is caught rather than discovered after
+    an incident. FedRAMP treats both as the technical implementation of SI-7's
+    integrity-verification requirement. The check fails closed: missing
+    evidence, no trails, a trail without validation, or a stopped Config
+    recorder each deny rather than pass.
 
   evidence:
-    - id: fedramp_si_7_software_firmware_information_integrity
+    - id: integrity_monitoring
       source: aws
-      type: aws_resource_inventory
+      type: integrity_monitoring
       fixture: ../tests/fixtures/fedramp-si-7-software-firmware-information-integrity-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_si_7_software_firmware_information_integrity
+    package: concord.fedramp.si_7
     file: ../policies/fedramp-si-7-software-firmware-information-integrity.rego
 
   remediation:
     runbook: docs/remediation/fedramp-si-7-software-firmware-information-integrity.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "SI-7"
+      - "SI-7(1)"
+      - "AU-9"
+    hipaa:
+      - "164.312(c)(1)"
+    soc2:
+      - "CC7.1"
+
+  status: stable
+  blocking: true

@@ -4,37 +4,72 @@ kind: Control
 metadata:
   id: FEDRAMP-SA-9-external-system-services
   name: fedramp-sa-9-external-system-services
-  title: External system services are subject to security controls
+  title: External system services are governed and monitored
   framework: fedramp
+  category: System and Services Acquisition
   severity: medium
-  tags: []
+  tags:
+    - fedramp
+    - third-party
+    - supply-chain
+    - attestation
+    - policy
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-SA-9-external-system-services enforces.
+    NIST 800-53 Rev 5 SA-9 (FedRAMP Moderate) requires providers of external
+    system services to comply with organization-defined security and privacy
+    requirements, and requires the organization to define and monitor those
+    services and their controls on an ongoing basis. Concord reads the
+    version-controlled external-services governance record from the
+    repository and confirms it maintains a service inventory, states the
+    security requirements imposed on providers, describes the ongoing
+    monitoring process, that it was reviewed within the last year, and that
+    it carries a verified signature.
+
+  rationale: |
+    Data and functionality that leave the authorization boundary do not leave
+    the organization's responsibility. SA-9 is the control that keeps SaaS,
+    subservice organizations, and other third parties from becoming
+    unmanaged extensions of the system. A governance record with no inventory
+    cannot claim to know its dependencies; one with no monitoring process
+    cannot claim the providers still meet their obligations. Anchoring the
+    check to a git-versioned, signed record lets Concord verify on every run
+    that the inventory, requirements, and monitoring are documented and
+    current, closing the third-party blind spot rather than assuming it.
 
   evidence:
-    - id: fedramp_sa_9_external_system_services
-      source: attestation
-      type: policy_attestation
+    - id: external_services
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-sa-9-external-system-services-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/external-services.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_sa_9_external_system_services
+    package: concord.fedramp.sa_9_external_system_services
     file: ../policies/fedramp-sa-9-external-system-services.rego
 
   remediation:
     runbook: docs/remediation/fedramp-sa-9-external-system-services.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "SA-9"
+      - "SA-9(2)"
+    soc2:
+      - "CC9.2"
+    iso27001:
+      - "A.5.19"
+      - "A.5.22"
+
+  status: stable
+  blocking: true

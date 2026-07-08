@@ -4,37 +4,72 @@ kind: Control
 metadata:
   id: FEDRAMP-AC-5-separation-of-duties
   name: fedramp-ac-5-separation-of-duties
-  title: Duties of individuals are separated as necessary to prevent malevolent activity
+  title: Separation of duties is defined in a current, signed conflicting-roles matrix
   framework: fedramp
+  category: Access Control
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - access-control
+    - separation-of-duties
+    - policy
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AC-5-separation-of-duties enforces.
+    NIST SP 800-53 Rev 5 AC-5 (Separation of Duties) requires the
+    organization to identify and document the duties of individuals that
+    require separation, and to define system access authorizations that
+    support that separation. FedRAMP Moderate expects a maintained
+    duties-to-roles matrix that names the sensitive functions, the roles that
+    must be kept mutually exclusive, and the process for reviewing the matrix.
+    Concord reads the version-controlled separation-of-duties matrix from the
+    repository and confirms it declares the duties matrix, the conflicting
+    roles that have been identified, the review process, and a recent signed
+    review.
+
+  rationale: |
+    Separation of duties is what stops a single insider from both making and
+    approving a privileged change, or from both administering and reviewing
+    the audit log that would catch them. AC-5 is only as strong as the matrix
+    that defines it: if the conflicting-role pairs are undocumented or the
+    matrix has drifted from the actual Okta group assignments, toxic
+    combinations accumulate silently. Concord anchors the evidence to a
+    git-versioned matrix whose freshness and cosign signature are verified on
+    every run, so an assessor sees not just that duties are separated but that
+    the separation is documented, current, and approved.
 
   evidence:
-    - id: fedramp_ac_5_separation_of_duties
-      source: attestation
-      type: policy_attestation
+    - id: sod_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-ac-5-separation-of-duties-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/separation-of-duties.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ac_5_separation_of_duties
+    package: concord.fedramp.ac_5
     file: ../policies/fedramp-ac-5-separation-of-duties.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ac-5-separation-of-duties.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "AC-5"
+    soc2:
+      - "CC1.3"
+      - "CC5.2"
+    iso27001:
+      - "A.5.3"
+
+  status: stable
+  blocking: true

@@ -1,8 +1,12 @@
 {
-  "fedramp_au_12_audit_generation": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
+  "fetched_at": "2026-06-25T00:00:00Z",
+  "cloudtrail": {
+    "trails": [
+      {
+        "name": "us-east-1-only-trail",
+        "is_multi_region_trail": false,
+        "is_logging": true
+      }
     ]
   }
 }

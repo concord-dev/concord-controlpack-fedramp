@@ -1,11 +1,19 @@
 {
-  "fedramp_ir_4_incident_handling": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/incident-handling.md",
+      "title": "Incident Handling Procedure",
+      "owner": "Security Operations Lead",
+      "detection_process": "We watch the dashboards.",
+      "containment_eradication": "",
+      "roles": "On-call engineer.",
+      "last_reviewed_at": "2026-06-03",
+      "review_age_days": 32,
+      "last_tested_at": "2023-01-15",
+      "test_age_days": 1270,
+      "signature_verified": false
+    }
+  ]
 }

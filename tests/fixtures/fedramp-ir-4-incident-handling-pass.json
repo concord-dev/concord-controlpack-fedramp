@@ -1,11 +1,20 @@
 {
-  "fedramp_ir_4_incident_handling": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/incident-handling.md",
+      "title": "Incident Handling Procedure",
+      "owner": "Security Operations Lead",
+      "detection_process": "SIEM correlation rules, GuardDuty findings, WAF alerts, and file-integrity monitoring page the on-call responder; each alert is triaged against a documented severity matrix and analysed for scope, affected assets, and indicators of compromise before a severity is assigned.",
+      "containment_eradication": "Containment isolates affected hosts via security-group quarantine and revokes suspect credentials while preserving volumes and memory for forensics; eradication removes the root cause (patch, config fix, key rotation) and is verified by a clean re-scan before recovery begins.",
+      "roles": "Incident Commander (on-call SRE lead), Security Lead (CISO delegate), Communications Lead, and Forensics Liaison are named with primary and alternate contacts and defined decision authority.",
+      "last_reviewed_at": "2026-06-03",
+      "review_age_days": 32,
+      "last_tested_at": "2026-05-15",
+      "test_age_days": 51,
+      "approved_by": "ciso@acme.com",
+      "signature_verified": true
+    }
+  ]
 }

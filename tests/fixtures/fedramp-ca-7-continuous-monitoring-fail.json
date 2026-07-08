@@ -1,11 +1,12 @@
 {
-  "fedramp_ca_7_continuous_monitoring": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "active_regions": ["us-east-1", "us-west-2"],
+  "recorders": [
+    {"region": "us-east-1", "recording": true, "all_supported": true},
+    {"region": "us-west-2", "recording": false, "all_supported": false}
+  ],
+  "guardduty_detectors": [
+    {"region": "us-east-1", "status": "ENABLED"},
+    {"region": "us-west-2", "status": "DISABLED"}
+  ]
 }

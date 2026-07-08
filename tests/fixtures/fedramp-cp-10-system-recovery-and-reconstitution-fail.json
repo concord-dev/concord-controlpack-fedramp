@@ -1,11 +1,18 @@
 {
-  "fedramp_cp_10_system_recovery_and_reconstitution": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/system-recovery-reconstitution.md",
+      "title": "System Recovery and Reconstitution Procedures",
+      "owner": "Platform Reliability Lead",
+      "recovery_procedures": "Restore from the latest snapshot.",
+      "reconstitution_steps": "",
+      "last_reviewed_at": "2026-06-02",
+      "review_age_days": 33,
+      "last_tested_at": "2022-09-01",
+      "test_age_days": 1400,
+      "signature_verified": false
+    }
+  ]
 }

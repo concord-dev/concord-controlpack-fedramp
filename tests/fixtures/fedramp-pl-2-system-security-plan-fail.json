@@ -1,11 +1,14 @@
 {
-  "fedramp_pl_2_system_security_plan": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/system-security-plan.md",
+      "title": "System Security Plan",
+      "system_boundary": "Production runs in AWS.",
+      "roles": "Security team owns the plan.",
+      "last_reviewed_at": "2026-05-30T00:00:00Z",
+      "signature_verified": false
+    }
+  ]
 }

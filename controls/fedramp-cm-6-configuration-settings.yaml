@@ -6,33 +6,64 @@ metadata:
   name: fedramp-cm-6-configuration-settings
   title: Configuration settings are established and enforced for system components
   framework: fedramp
+  category: Configuration Management
   severity: medium
-  tags: []
+  tags:
+    - fedramp
+    - configuration-management
+    - hardening
+    - aws-config
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-CM-6-configuration-settings enforces.
+    NIST 800-53 Rev 5 CM-6 (Configuration Settings), required by the FedRAMP
+    Moderate baseline, requires the organization to establish, document, and
+    enforce mandatory configuration settings for system components using
+    security configuration checklists. In AWS this is proven by benchmark-
+    aligned AWS Config conformance packs that continuously evaluate live
+    resources. Concord reads the conformance-pack status and denies when no pack
+    is deployed, when no benchmark-aligned pack (FedRAMP or CIS) is present, or
+    when any deployed pack reports a state other than COMPLIANT. An absent
+    evidence payload denies.
+
+  rationale: |
+    A documented hardening standard is worthless unless deviations from it are
+    detected automatically against running resources. Mapping a FedRAMP- or
+    CIS-aligned conformance pack onto AWS Config turns the checklist into
+    continuous, evidence-backed detection: a NON_COMPLIANT pack means live
+    resources have diverged from the mandatory settings and must be remediated,
+    and the absence of any benchmark pack means the settings are not enforced at
+    all. The control fails closed — missing evidence, a missing benchmark pack,
+    or a non-COMPLIANT pack denies rather than assuming settings are enforced.
 
   evidence:
-    - id: fedramp_cm_6_configuration_settings
+    - id: config_conformance
       source: aws
-      type: aws_resource_inventory
+      type: config_conformance_status
       fixture: ../tests/fixtures/fedramp-cm-6-configuration-settings-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_cm_6_configuration_settings
+    package: concord.fedramp.cm_6_config_settings
     file: ../policies/fedramp-cm-6-configuration-settings.rego
 
   remediation:
     runbook: docs/remediation/fedramp-cm-6-configuration-settings.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 4h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "CM-6"
+      - "CM-2"
+    pci_dss:
+      - "2.2.1"
+    cis_aws:
+      - "3.5"
+
+  status: stable
+  blocking: true

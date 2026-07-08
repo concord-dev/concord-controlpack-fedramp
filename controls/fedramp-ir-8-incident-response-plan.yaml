@@ -4,37 +4,73 @@ kind: Control
 metadata:
   id: FEDRAMP-IR-8-incident-response-plan
   name: fedramp-ir-8-incident-response-plan
-  title: Documented incident response plan is current and tested
+  title: A documented incident response plan is current, signed, and tested
   framework: fedramp
+  category: Incident Response
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - incident-response
+    - policy
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-IR-8-incident-response-plan enforces.
+    NIST SP 800-53 Rev 5 IR-8 (Incident Response Plan) requires a documented
+    incident response plan that provides the organization with a roadmap for
+    implementing its incident response capability: the plan's scope, the
+    structure and roles of the incident response team, and how incident
+    response fits with the wider organization and external parties
+    (communication plan). FedRAMP Moderate expects the plan to be reviewed and
+    tested on a defined cadence. Concord reads the version-controlled incident
+    response plan from the repository and confirms it declares the plan scope,
+    the roles and responsibilities, the communication plan, a recent test, and
+    a recent signed review.
+
+  rationale: |
+    IR-8 is the umbrella document that makes the rest of the IR family
+    coherent: without a plan that defines scope, team structure, and how the
+    organization communicates internally and to US-CERT, agency customers, and
+    the public, individual procedures fragment and responders improvise under
+    pressure. FedRAMP requires the plan to be exercised so gaps are found in a
+    tabletop rather than during a live breach. Concord anchors the evidence to
+    a git-versioned plan whose review freshness, exercise freshness, and cosign
+    signature are verified on every run, so an assessor sees the plan is
+    complete, current, tested, and approved.
 
   evidence:
-    - id: fedramp_ir_8_incident_response_plan
-      source: attestation
-      type: policy_attestation
+    - id: incident_response_plan_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-ir-8-incident-response-plan-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/incident-response-plan.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ir_8_incident_response_plan
+    package: concord.fedramp.ir_8
     file: ../policies/fedramp-ir-8-incident-response-plan.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ir-8-incident-response-plan.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "IR-8"
+    soc2:
+      - "CC7.3"
+      - "CC7.4"
+      - "CC7.5"
+    iso27001:
+      - "A.5.24"
+      - "A.5.26"
+
+  status: stable
+  blocking: true

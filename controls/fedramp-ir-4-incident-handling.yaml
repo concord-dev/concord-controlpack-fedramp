@@ -4,37 +4,70 @@ kind: Control
 metadata:
   id: FEDRAMP-IR-4-incident-handling
   name: fedramp-ir-4-incident-handling
-  title: Incident handling capability for security incidents is operational
+  title: Incident handling capability is defined in a current, signed, tested procedure
   framework: fedramp
+  category: Incident Response
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - incident-response
+    - policy
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-IR-4-incident-handling enforces.
+    NIST SP 800-53 Rev 5 IR-4 (Incident Handling) requires an incident
+    handling capability that spans preparation, detection and analysis,
+    containment, eradication, and recovery, with defined roles and a feedback
+    loop into the wider control set. FedRAMP Moderate expects the capability to
+    be documented and exercised. Concord reads the version-controlled
+    incident-handling procedure from the repository and confirms it declares
+    the detection and analysis process, the containment and eradication
+    approach, the responder roles, a recent test, and a recent signed review.
+
+  rationale: |
+    When an alert fires at 2 a.m., the difference between a contained event and
+    a reportable breach is whether responders know how to triage, contain, and
+    eradicate without destroying the forensic evidence they will later need.
+    IR-4 codifies that capability so it does not live only in one senior
+    engineer's head, and FedRAMP requires it to be tested so the muscle memory
+    exists before it is needed. Concord anchors the evidence to a git-versioned
+    procedure whose review freshness, exercise freshness, and cosign signature
+    are verified on every run, turning "we handle incidents" into a documented,
+    rehearsed, and approved capability.
 
   evidence:
-    - id: fedramp_ir_4_incident_handling
-      source: attestation
-      type: policy_attestation
+    - id: incident_handling_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-ir-4-incident-handling-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/incident-handling.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ir_4_incident_handling
+    package: concord.fedramp.ir_4
     file: ../policies/fedramp-ir-4-incident-handling.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ir-4-incident-handling.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "IR-4"
+    soc2:
+      - "CC7.3"
+      - "CC7.4"
+    iso27001:
+      - "A.5.26"
+      - "A.5.27"
+
+  status: stable
+  blocking: true

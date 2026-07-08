@@ -6,33 +6,57 @@ metadata:
   name: fedramp-au-9-protection-of-audit-information
   title: Audit information and audit tools are protected from unauthorised access
   framework: fedramp
+  category: Audit and Accountability
   severity: high
-  tags: []
+  tags: [fedramp, fedramp-moderate, audit, integrity, encryption, cloudtrail]
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AU-9-protection-of-audit-information enforces.
-
+    NIST 800-53 AU-9 (Protection of Audit Information), as required by the
+    FedRAMP Moderate baseline, requires audit information and audit logging
+    tools to be protected from unauthorised access, modification, and deletion.
+    Concord verifies that every logging CloudTrail trail has log-file validation
+    enabled so records are tamper-evident, is encrypted at rest with a KMS key
+    so audit data cannot be read by unauthorised parties, and stores its logs in
+    an S3 bucket that is not publicly accessible so access is restricted. Each
+    unprotected trail is reported separately, and the check fails closed when no
+    trail is present.
+  rationale: |
+    Audit records are the primary evidence used to detect and investigate
+    misuse, which makes them a prime target for an attacker seeking to cover
+    their tracks. Log-file validation lets any post-hoc modification or deletion
+    of CloudTrail records be detected; KMS encryption ensures the log contents
+    are unreadable without an authorised key; and a non-public log bucket
+    prevents both exfiltration and tampering by anonymous principals. A trail
+    that is missing any of these protections leaves audit information exposed to
+    exactly the manipulation AU-9 is meant to prevent, so Concord fails closed
+    when no trail is present and denies per trail for each missing safeguard.
   evidence:
-    - id: fedramp_au_9_protection_of_audit_information
+    - id: cloudtrail
       source: aws
-      type: aws_resource_inventory
+      type: audit_trail_status
       fixture: ../tests/fixtures/fedramp-au-9-protection-of-audit-information-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_au_9_protection_of_audit_information
+    package: concord.fedramp.au_9
     file: ../policies/fedramp-au-9-protection-of-audit-information.rego
+
+  mappings:
+    nist_800_53: ["AU-9", "AU-9(2)", "AU-9(3)"]
+    pci_dss: ["10.3.2", "10.5.1"]
+    hipaa: ["164.312(b)", "164.312(c)(1)"]
+    soc2: ["CC7.2"]
+    cis_aws: ["3.2", "3.7"]
 
   remediation:
     runbook: docs/remediation/fedramp-au-9-protection-of-audit-information.md
     auto_fix: false
     estimated_effort: 30m
 
-  status: draft
-  blocking: false
+  status: stable
+  blocking: true

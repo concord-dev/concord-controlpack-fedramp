@@ -6,35 +6,64 @@ metadata:
   name: fedramp-ac-11-session-lock
   title: System initiates session lock after defined idle period
   framework: fedramp
+  category: Access Control
   severity: low
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - access-control
+    - iam
+    - session
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AC-11-session-lock enforces.
+    NIST SP 800-53 Rev 5 AC-11 (Session Lock), as required by the FedRAMP
+    Moderate baseline, requires the system to initiate a session lock after a
+    defined period of inactivity; FedRAMP parameterizes that period at 15
+    minutes. For interactive AWS access (the Management Console and IAM Identity
+    Center) the enforcing control is the configured idle-lock timeout. Concord
+    fails any IAM role scoped to interactive human use whose configured idle
+    session-lock timeout exceeds 900 seconds, and fails closed on any
+    interactive role that publishes no idle-lock setting at all.
+
+  rationale: |
+    A console or Identity Center session left open on an unattended workstation
+    is a direct exposure of the system to anyone with physical access; the
+    session lock is what closes that window without ending the session
+    outright. Roles are scoped to interactive use via the session_type tag so
+    that non-interactive service roles, which never hold a human session, are
+    not falsely flagged. The control fails closed: an interactive role with no
+    published idle-lock timeout is denied rather than assumed compliant, because
+    an unproven lock is indistinguishable from no lock at all.
 
   evidence:
-    - id: fedramp_ac_11_session_lock
-      source: attestation
-      type: policy_attestation
+    - id: iam_roles
+      source: aws
+      type: iam_roles
       fixture: ../tests/fixtures/fedramp-ac-11-session-lock-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ac_11_session_lock
+    package: concord.fedramp.session_lock
     file: ../policies/fedramp-ac-11-session-lock.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ac-11-session-lock.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 4h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "AC-11"
+      - "AC-11(1)"
+    soc2:
+      - "CC6.1"
+    hipaa:
+      - "164.312(a)(2)(iii)"
+
+  status: stable
+  blocking: true

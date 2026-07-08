@@ -6,33 +6,63 @@ metadata:
   name: fedramp-si-3-malicious-code-protection
   title: Malicious code protection is employed at entry and exit points
   framework: fedramp
+  category: System and Information Integrity
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - system-and-information-integrity
+    - malware
+    - guardduty
+    - inspector
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-SI-3-malicious-code-protection enforces.
+    NIST 800-53 Rev 5 SI-3 (Malicious Code Protection), as required by the
+    FedRAMP Moderate baseline, requires the organization to employ malicious
+    code protection mechanisms at system entry and exit points to detect and
+    eradicate malicious code. Concord verifies that AWS GuardDuty — which
+    performs continuous threat detection over VPC flow logs, DNS, and
+    CloudTrail telemetry — has an enabled detector in every active region, and
+    that Amazon Inspector (vulnerability and malware scanning) is enabled at the
+    account level. Each active region without an enabled detector is reported
+    separately.
+  rationale: |
+    Malicious-code detection only provides assurance if it covers the entire
+    estate; a single region without an enabled GuardDuty detector is a blind
+    spot where malware command-and-control traffic and credential abuse go
+    unnoticed, and GuardDuty is a regional service so coverage must be confirmed
+    region by region. Requiring account-level Inspector in addition ensures
+    workloads and container images are continuously scanned for known malicious
+    and vulnerable components. The check fails closed: no evidence, a region
+    without a detector, or Inspector disabled each fails the control.
 
   evidence:
-    - id: fedramp_si_3_malicious_code_protection
+    - id: malware_protection
       source: aws
-      type: aws_resource_inventory
+      type: anti_malware_status
       fixture: ../tests/fixtures/fedramp-si-3-malicious-code-protection-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_si_3_malicious_code_protection
+    package: concord.fedramp.si_3
     file: ../policies/fedramp-si-3-malicious-code-protection.rego
 
   remediation:
     runbook: docs/remediation/fedramp-si-3-malicious-code-protection.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "SI-3"
+    pci_dss:
+      - "5.2"
+    soc2:
+      - "CC6.8"
+
+  status: stable
+  blocking: true

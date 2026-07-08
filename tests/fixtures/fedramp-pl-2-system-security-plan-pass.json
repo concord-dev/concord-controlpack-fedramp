@@ -1,11 +1,16 @@
 {
-  "fedramp_pl_2_system_security_plan": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/system-security-plan.md",
+      "title": "System Security Plan",
+      "system_boundary": "The authorisation boundary comprises the production AWS accounts (us-east-1, us-west-2), the container platform, managed data stores, and the corporate SSO tenant; the boundary diagram is maintained in the SSP appendix and reconciled against the asset inventory.",
+      "control_implementation_summary": "Each control in the FedRAMP Moderate baseline is mapped to its implementation statement, responsible role, and supporting evidence in the control-implementation matrix (SSP appendix A).",
+      "roles": "System Owner, ISSO, ISSM, and Authorising Official are named with current contact details in the SSP front matter.",
+      "last_reviewed_at": "2026-05-30T00:00:00Z",
+      "signature_verified": true,
+      "approved_by": "authorising-official@acme.com"
+    }
+  ]
 }

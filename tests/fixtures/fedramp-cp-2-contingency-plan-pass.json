@@ -1,11 +1,20 @@
 {
-  "fedramp_cp_2_contingency_plan": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/contingency-plan.md",
+      "title": "Information System Contingency Plan",
+      "owner": "Information System Contingency Plan Coordinator",
+      "roles_responsibilities": "The ISCP Coordinator declares activation, the Recovery Lead (SRE on-call) executes restoration, the Communications Lead handles internal and customer notifications, and the AO/ISSO are informed; each role lists a primary and alternate with 24x7 contact details.",
+      "recovery_objectives": "Recovery Time Objective (RTO) is 4 hours and Recovery Point Objective (RPO) is 1 hour for the moderate-impact production system; degraded read-only service must be available within 1 hour.",
+      "activation_criteria": "The plan is activated when a component outage is expected to exceed the RTO, on loss of a primary availability zone, or on confirmed data corruption of a system of record; activation authority rests with the ISCP Coordinator or their alternate.",
+      "last_reviewed_at": "2026-06-01",
+      "review_age_days": 34,
+      "last_tested_at": "2026-05-05",
+      "test_age_days": 61,
+      "approved_by": "ao@acme.com",
+      "signature_verified": true
+    }
+  ]
 }

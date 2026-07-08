@@ -6,33 +6,70 @@ metadata:
   name: fedramp-ia-2-1-mfa-privileged
   title: MFA is enforced for privileged accounts
   framework: fedramp
+  category: Identification and Authentication
   severity: critical
-  tags: []
+  tags:
+    - fedramp
+    - authentication
+    - mfa
+    - iam
+    - privileged-access
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-IA-2-1-mfa-privileged enforces.
+    NIST 800-53 Rev 5 IA-2(1) (Multi-factor Authentication to Privileged
+    Accounts), required by the FedRAMP Moderate baseline, requires multi-factor
+    authentication for network access to privileged accounts. Concord reads the
+    AWS IAM credential report and denies any privileged, console-enabled
+    identity that has no active MFA device. An identity is treated as
+    privileged when it is the root account, is flagged admin, carries a tag
+    privileged=true, or holds an admin-grade attached policy (for example
+    AdministratorAccess or PowerUserAccess); where no explicit signal exists, a
+    console user that also holds an active long-lived access key is treated as
+    privileged. Missing or false mfa_active is treated as no MFA so the control
+    never fails open.
+
+  rationale: |
+    Privileged accounts are the highest-value target in any environment: a
+    single compromised administrator credential can disable logging, exfiltrate
+    data, and pivot across the whole system, so IA-2(1) singles them out for a
+    mandatory second factor. Password-only privileged access is repeatedly the
+    root cause in cloud breach reports. By resolving privilege from explicit
+    admin markers, admin-grade policies, and — as a fallback — active access
+    keys on console identities, Concord surfaces every privileged path lacking
+    MFA. The check fails closed: an mfa_active value that is false, null, or
+    absent denies, and an absent credential report denies outright.
 
   evidence:
-    - id: fedramp_ia_2_1_mfa_privileged
+    - id: iam_credentials
       source: aws
-      type: aws_resource_inventory
+      type: iam_credential_report
       fixture: ../tests/fixtures/fedramp-ia-2-1-mfa-privileged-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ia_2_1_mfa_privileged
+    package: concord.fedramp.ia_2_1_mfa_privileged
     file: ../policies/fedramp-ia-2-1-mfa-privileged.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ia-2-1-mfa-privileged.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "IA-2(1)"
+    pci_dss:
+      - "8.6"
+      - "8.4.2"
+    hipaa:
+      - "164.312(d)"
+    cis_aws:
+      - "1.10"
+
+  status: stable
+  blocking: true

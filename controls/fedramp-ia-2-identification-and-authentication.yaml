@@ -4,35 +4,68 @@ kind: Control
 metadata:
   id: FEDRAMP-IA-2-identification-and-authentication
   name: fedramp-ia-2-identification-and-authentication
-  title: System uniquely identifies and authenticates organisational users
+  title: Organisational users are uniquely identified and authenticated
   framework: fedramp
+  category: Identification and Authentication
   severity: critical
-  tags: []
+  tags:
+    - fedramp
+    - identity
+    - iam
+    - authentication
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-IA-2-identification-and-authentication enforces.
+    NIST 800-53 Rev 5 IA-2 (Identification and Authentication — Organizational
+    Users), required by the FedRAMP Moderate baseline, requires the system to
+    uniquely identify and authenticate each organizational user and to
+    associate that unique identity with every action for accountability.
+    Concord reads the AWS IAM credential report and fails any console-enabled
+    identity whose name matches a shared or generic pattern (for example
+    "admin", "shared", "service"), because such accounts cannot attribute
+    activity to one individual. It also fails routine use of the root account —
+    recent console sign-in or a standing access key — because day-to-day use of
+    the unnamed root principal breaks unique identification.
+
+  rationale: |
+    Shared and generic logins are the classic way individual accountability
+    collapses: when several administrators sign in as "admin", no audit record
+    can place a specific person at a specific action, defeating IA-2 and the AU
+    audit-trail controls at once. The root account carries the same problem
+    plus unlimited privilege, so it must be reserved for the rare tasks that
+    genuinely require it rather than routine work. The control fails closed — if
+    the credential report is absent it denies rather than assuming every
+    identity is unique.
 
   evidence:
-    - id: fedramp_ia_2_identification_and_authentication
+    - id: iam_credentials
       source: aws
-      type: aws_resource_inventory
+      type: iam_credential_report
       fixture: ../tests/fixtures/fedramp-ia-2-identification-and-authentication-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ia_2_identification_and_authentication
+    package: concord.fedramp.ia_2_identification
     file: ../policies/fedramp-ia-2-identification-and-authentication.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ia-2-identification-and-authentication.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "IA-2"
+      - "AC-2"
+    pci_dss:
+      - "8.1"
+      - "8.2.1"
+    cis_aws:
+      - "1.7"
+
+  status: stable
+  blocking: true

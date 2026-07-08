@@ -6,33 +6,65 @@ metadata:
   name: fedramp-ia-5-authenticator-management
   title: Authenticator management is governed by complexity, lifetime, and reuse policy
   framework: fedramp
+  category: Identification and Authentication
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - identity
+    - password-policy
+    - iam
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-IA-5-authenticator-management enforces.
+    NIST 800-53 Rev 5 IA-5 (Authenticator Management) and IA-5(1)
+    (Password-based Authentication), required by the FedRAMP Moderate baseline,
+    require the organization to manage authenticators by establishing minimum
+    strength, complexity, rotation cadence, and reuse-prevention. Concord reads
+    the AWS IAM account password policy and denies it when the policy is weaker
+    than the FedRAMP Moderate minimums: minimum length below 12, any missing
+    character class (uppercase, lowercase, number, symbol), a maximum password
+    age above 60 days (or no expiry), or reuse-prevention remembering fewer
+    than 24 previous passwords. An absent or unconfigured policy denies.
+
+  rationale: |
+    The password policy is the single account-wide lever that governs every
+    console credential, so a weak or missing policy silently undermines every
+    downstream authentication control. IA-5(1) fixes concrete parameters —
+    length, complexity, rotation, and reuse — precisely because ad-hoc password
+    hygiene does not survive contact with real users. Checking the live IAM
+    account policy against the FedRAMP minimums turns the written requirement
+    into automated, evidence-backed enforcement. The control fails closed: if no
+    policy is configured or no evidence is collected it denies rather than
+    assuming a compliant policy exists.
 
   evidence:
-    - id: fedramp_ia_5_authenticator_management
+    - id: password_policy
       source: aws
-      type: aws_resource_inventory
+      type: iam_password_policy
       fixture: ../tests/fixtures/fedramp-ia-5-authenticator-management-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ia_5_authenticator_management
+    package: concord.fedramp.ia_5_authenticator
     file: ../policies/fedramp-ia-5-authenticator-management.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ia-5-authenticator-management.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "IA-5"
+      - "IA-5(1)"
+    cis_aws:
+      - "1.16"
+    pci_dss:
+      - "8.3.6"
+
+  status: stable
+  blocking: true

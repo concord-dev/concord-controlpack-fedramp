@@ -4,37 +4,73 @@ kind: Control
 metadata:
   id: FEDRAMP-SA-11-developer-testing-and-evaluation
   name: fedramp-sa-11-developer-testing-and-evaluation
-  title: Developer security testing is required and validated
+  title: Developer security testing and evaluation is required and validated
   framework: fedramp
+  category: System and Services Acquisition
   severity: medium
-  tags: []
+  tags:
+    - fedramp
+    - secure-development
+    - sast
+    - dast
+    - attestation
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-SA-11-developer-testing-and-evaluation enforces.
+    NIST 800-53 Rev 5 SA-11 (FedRAMP Moderate) requires the developer of the
+    system, component, or service to perform security testing and evaluation
+    at a defined frequency — for example static analysis (SAST), dynamic
+    analysis (DAST), and software composition / dependency analysis — and to
+    track and remediate the flaws that testing uncovers. Concord reads the
+    version-controlled developer-testing record from the repository and
+    confirms it declares the testing types performed, the frequency at which
+    they run, the date testing was last performed, and the flaw-remediation
+    tracking mechanism, that testing occurred within the last year, and that
+    it carries a verified signature.
+
+  rationale: |
+    Security defects are cheapest to fix while software is still being built,
+    and SA-11 pushes assurance activities left into the development pipeline
+    instead of relying solely on a periodic external assessment. A testing
+    program that names no techniques, runs on no schedule, or never tracks
+    remediation is theatre. Anchoring the check to a git-versioned, signed
+    record lets Concord confirm on every run that SAST/DAST/SCA are declared,
+    running on a real cadence, recently exercised, and feeding a remediation
+    loop — evidence that developer testing is an operating practice rather
+    than a checkbox.
 
   evidence:
-    - id: fedramp_sa_11_developer_testing_and_evaluation
-      source: attestation
-      type: policy_attestation
+    - id: developer_testing
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-sa-11-developer-testing-and-evaluation-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/developer-testing.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_sa_11_developer_testing_and_evaluation
+    package: concord.fedramp.sa_11_developer_testing_and_evaluation
     file: ../policies/fedramp-sa-11-developer-testing-and-evaluation.rego
 
   remediation:
     runbook: docs/remediation/fedramp-sa-11-developer-testing-and-evaluation.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "SA-11"
+      - "SA-11(1)"
+    soc2:
+      - "CC8.1"
+    iso27001:
+      - "A.8.28"
+      - "A.8.29"
+
+  status: stable
+  blocking: true

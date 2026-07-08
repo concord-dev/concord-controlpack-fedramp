@@ -1,8 +1,11 @@
 {
-  "fedramp_au_4_audit_log_storage_capacity": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
+  "fetched_at": "2026-06-25T00:00:00Z",
+  "log_groups": [
+    { "name": "/aws/cloudtrail/org-management-trail", "is_audit_log": true, "retention_in_days": 365 },
+    { "name": "/aws/vpc/flowlogs", "is_audit_log": true, "retention_in_days": 90 }
+  ],
+  "s3_lifecycle": {
+    "bucket": "agency-cloudtrail-archive",
+    "expiration_days": 730
   }
 }

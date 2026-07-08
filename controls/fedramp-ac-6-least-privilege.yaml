@@ -6,33 +6,66 @@ metadata:
   name: fedramp-ac-6-least-privilege
   title: Principle of least privilege is enforced for all authorized accesses
   framework: fedramp
+  category: Access Control
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - access-control
+    - iam
+    - least-privilege
   owners:
-    - team: concord-dev
+    - team: security-engineering
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-AC-6-least-privilege enforces.
+    NIST SP 800-53 Rev 5 AC-6 (Least Privilege), as required by the FedRAMP
+    Moderate baseline, requires the organization to employ the principle of
+    least privilege, allowing only the authorizations necessary for users (and
+    processes acting on their behalf) to accomplish assigned tasks. Concord
+    reads every IAM identity (user, group, and role) together with its attached
+    managed and inline policies and fails any identity that carries the
+    AWS-managed AdministratorAccess policy or a statement allowing Action "*"
+    on Resource "*". A standing full-admin grant is broader than any single job
+    function requires and therefore cannot satisfy least privilege.
+
+  rationale: |
+    Broad "*/*" grants are the most common way least privilege erodes: a role
+    created for one task accumulates AdministratorAccess and quietly becomes a
+    path to every resource in the account. FedRAMP assessors treat an
+    unconstrained admin grant attached to a routine identity as an immediate
+    AC-6 finding because it defeats the ability to tie each permission back to a
+    documented, least-privilege authorization. The check fails closed: when no
+    IAM policy evidence is collected it denies rather than assuming least
+    privilege holds.
 
   evidence:
-    - id: fedramp_ac_6_least_privilege
+    - id: iam_policies
       source: aws
-      type: aws_resource_inventory
+      type: iam_policies
       fixture: ../tests/fixtures/fedramp-ac-6-least-privilege-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ac_6_least_privilege
+    package: concord.fedramp.least_privilege
     file: ../policies/fedramp-ac-6-least-privilege.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ac-6-least-privilege.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "AC-6"
+    soc2:
+      - "CC6.1"
+      - "CC6.3"
+    pci_dss:
+      - "7.1"
+      - "7.2.1"
+
+  status: stable
+  blocking: true

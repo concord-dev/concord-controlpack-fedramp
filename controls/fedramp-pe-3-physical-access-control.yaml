@@ -6,35 +6,70 @@ metadata:
   name: fedramp-pe-3-physical-access-control
   title: Physical access authorisations are enforced at access points
   framework: fedramp
-  severity: medium
-  tags: []
+  category: Physical and Environmental Protection
+  severity: high
+  tags:
+    - fedramp
+    - physical-security
+    - access-control
+    - attestation
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-PE-3-physical-access-control enforces.
+    NIST SP 800-53 Rev 5 control PE-3 (Physical Access Control), required at the
+    FedRAMP Moderate baseline, requires the organisation to enforce physical
+    access authorisations at defined entry and exit points to facilities housing
+    the system — verifying individual access authorisations before granting
+    entry, controlling ingress and egress, and maintaining visitor access
+    records. Physical access enforcement is not observable through cloud APIs, so
+    Concord reads a signed, version-controlled attestation of the physical
+    access-control program from the repository and confirms it declares the
+    access-authorisation process, that access points are controlled, that
+    visitors are logged, and a recent signed review.
+
+  rationale: |
+    Every logical control in the baseline assumes an attacker cannot simply walk
+    up to the hardware; PE-3 is the assumption made explicit. Tailgating through
+    an uncontrolled door or an unlogged visitor at the rack defeats access
+    enforcement, MFA, and encryption at rest in a single step. Assessors test
+    PE-3 against badge records and the visitor log, so Concord requires the
+    attestation to affirmatively confirm access points are controlled and
+    visitors are logged (explicit true, not merely mentioned) and anchors it to a
+    git-versioned document whose freshness and signature are verified on every
+    run.
 
   evidence:
-    - id: fedramp_pe_3_physical_access_control
-      source: attestation
-      type: policy_attestation
+    - id: physical_access
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-pe-3-physical-access-control-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/physical-access-control.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_pe_3_physical_access_control
+    package: concord.fedramp.pe_3
     file: ../policies/fedramp-pe-3-physical-access-control.rego
 
   remediation:
     runbook: docs/remediation/fedramp-pe-3-physical-access-control.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "PE-3"
+    hipaa:
+      - "164.310(a)(1)"
+    iso27001:
+      - "A.7.2"
+    soc2:
+      - "CC6.4"
+
+  status: stable
+  blocking: true

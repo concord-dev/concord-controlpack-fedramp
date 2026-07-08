@@ -4,35 +4,67 @@ kind: Control
 metadata:
   id: FEDRAMP-CM-7-least-functionality
   name: fedramp-cm-7-least-functionality
-  title: System is configured to provide only essential capabilities
+  title: The system provides only essential capabilities
   framework: fedramp
+  category: Configuration Management
   severity: medium
-  tags: []
+  tags:
+    - fedramp
+    - configuration-management
+    - hardening
+    - least-functionality
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-CM-7-least-functionality enforces.
+    NIST 800-53 Rev 5 CM-7 (Least Functionality) and CM-7(1), required by the
+    FedRAMP Moderate baseline, require the system to be configured to provide
+    only essential capabilities and to prohibit or restrict the use of
+    unnecessary or insecure functions, ports, protocols, and services. Concord
+    inspects every AWS security group and denies any ingress rule that permits a
+    known unnecessary or insecure legacy service — such as FTP, Telnet, TFTP,
+    the NetBIOS/SMB family, RPC/portmapper, NFS, rsync, VNC, or X11 — and any
+    rule that opens all ports and protocols, which necessarily exposes those
+    services. An absent evidence payload denies.
+
+  rationale: |
+    Every enabled service is attack surface, and legacy services such as Telnet,
+    FTP, and SMB carry credentials or data in the clear and are repeatedly
+    implicated in breaches. Assessors validating CM-7 expect the configuration
+    to disable functionality that is not needed; the fastest evidence it has not
+    been applied is a firewall rule that still permits one of these services.
+    Enumerating the unnecessary-service ports and failing closed on any
+    "all ports" rule turns that expectation into a concrete, repeatable check.
+    The control fails closed — absent security-group evidence denies rather than
+    assuming the environment is hardened.
 
   evidence:
-    - id: fedramp_cm_7_least_functionality
+    - id: security_groups
       source: aws
-      type: aws_resource_inventory
+      type: security_groups
       fixture: ../tests/fixtures/fedramp-cm-7-least-functionality-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_cm_7_least_functionality
+    package: concord.fedramp.cm_7_least_functionality
     file: ../policies/fedramp-cm-7-least-functionality.rego
 
   remediation:
     runbook: docs/remediation/fedramp-cm-7-least-functionality.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "CM-7"
+      - "CM-7(1)"
+    pci_dss:
+      - "2.2.5"
+    cis_aws:
+      - "5.2"
+
+  status: stable
+  blocking: true

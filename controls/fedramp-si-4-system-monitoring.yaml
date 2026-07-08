@@ -6,33 +6,63 @@ metadata:
   name: fedramp-si-4-system-monitoring
   title: System is monitored to detect attacks and indicators of potential attacks
   framework: fedramp
+  category: System and Information Integrity
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - system-and-information-integrity
+    - monitoring
+    - guardduty
+    - threat-detection
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-SI-4-system-monitoring enforces.
+    NIST 800-53 Rev 5 SI-4 (System Monitoring), with enhancement SI-4(4)
+    (Inbound and Outbound Communications Traffic), as required by the FedRAMP
+    Moderate baseline, requires the organization to monitor the system to detect
+    attacks and indicators of potential attacks. Concord verifies that AWS
+    GuardDuty, which analyses VPC flow, DNS, and CloudTrail telemetry for
+    anomalous and malicious activity, has an enabled detector in every active
+    region. Each active region without an enabled detector is reported
+    separately, and the control fails closed when no active region is reported.
+  rationale: |
+    System monitoring only provides assurance if it covers the whole attack
+    surface; a single region without an enabled GuardDuty detector is a blind
+    spot where reconnaissance, lateral movement, and data exfiltration proceed
+    undetected. GuardDuty is a regional service, so coverage must be confirmed
+    region by region against the set of regions actually in use, and a detector
+    that exists but is suspended provides no monitoring. Concord fails closed
+    when no evidence is collected or when no active region is reported, because
+    absence of monitoring must never be read as compliance.
 
   evidence:
-    - id: fedramp_si_4_system_monitoring
+    - id: system_monitoring
       source: aws
-      type: aws_resource_inventory
+      type: guardduty_status
       fixture: ../tests/fixtures/fedramp-si-4-system-monitoring-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_si_4_system_monitoring
+    package: concord.fedramp.si_4
     file: ../policies/fedramp-si-4-system-monitoring.rego
 
   remediation:
     runbook: docs/remediation/fedramp-si-4-system-monitoring.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "SI-4"
+      - "SI-4(4)"
+    pci_dss:
+      - "11.4"
+    soc2:
+      - "CC7.2"
+
+  status: stable
+  blocking: true

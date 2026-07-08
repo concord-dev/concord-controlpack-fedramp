@@ -4,37 +4,74 @@ kind: Control
 metadata:
   id: FEDRAMP-IR-6-incident-reporting
   name: fedramp-ir-6-incident-reporting
-  title: Incidents are reported to appropriate authorities within required timeframes
+  title: Incident reporting timeframes and authorities are defined in a current, signed procedure
   framework: fedramp
+  category: Incident Response
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - incident-response
+    - reporting
+    - us-cert
+    - policy
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-IR-6-incident-reporting enforces.
+    NIST SP 800-53 Rev 5 IR-6 (Incident Reporting) requires personnel to
+    report suspected incidents within organization-defined time periods and to
+    report incident information to designated authorities. For FedRAMP this
+    includes reporting to US-CERT/CISA and to the authorizing official and
+    FedRAMP ISSO within the mandated timeframe (US-CERT requires reporting
+    within one hour of a confirmed incident). Concord reads the
+    version-controlled incident-reporting procedure from the repository and
+    confirms it declares the reporting timeframes, the authorities to be
+    notified (including US-CERT), the escalation path, and a recent signed
+    review.
+
+  rationale: |
+    FedRAMP authorizations carry a hard external obligation that ordinary
+    corporate incident response does not: confirmed incidents must be reported
+    to US-CERT within one hour, and to the AO and FedRAMP PMO on their
+    timelines. Missing that window is itself a compliance failure independent
+    of how well the incident was handled technically. Codifying the exact
+    timeframes, named authorities, and escalation path removes the fatal "who
+    do we call and by when" hesitation. Concord anchors the evidence to a
+    git-versioned procedure whose freshness and cosign signature are verified
+    on every run.
 
   evidence:
-    - id: fedramp_ir_6_incident_reporting
-      source: attestation
-      type: policy_attestation
+    - id: incident_reporting_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-ir-6-incident-reporting-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/incident-reporting.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_ir_6_incident_reporting
+    package: concord.fedramp.ir_6
     file: ../policies/fedramp-ir-6-incident-reporting.rego
 
   remediation:
     runbook: docs/remediation/fedramp-ir-6-incident-reporting.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "IR-6"
+    soc2:
+      - "CC7.3"
+      - "CC2.3"
+    iso27001:
+      - "A.6.8"
+      - "A.5.24"
+
+  status: stable
+  blocking: true

@@ -1,8 +1,26 @@
 {
-  "fedramp_ac_17_remote_access": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "fetched_at": "2026-06-28T08:30:00Z",
+  "groups": [
+    {
+      "id": "sg-legacy-ssh",
+      "description": "SSH open to the world",
+      "ingress_rules": [
+        {"protocol": "tcp", "from_port": 22, "to_port": 22, "cidr": "0.0.0.0/0"}
+      ]
+    },
+    {
+      "id": "sg-rdp-ipv6",
+      "description": "RDP open over IPv6",
+      "ingress_rules": [
+        {"protocol": "tcp", "from_port": 3389, "to_port": 3389, "cidr": "::/0"}
+      ]
+    },
+    {
+      "id": "sg-mgmt",
+      "description": "Internal management path without confirmed encryption",
+      "ingress_rules": [
+        {"protocol": "tcp", "from_port": 8443, "to_port": 8443, "cidr": "10.0.0.0/8", "admin": true, "encrypted": false}
+      ]
+    }
+  ]
 }

@@ -1,11 +1,15 @@
 {
-  "fedramp_ma_2_controlled_maintenance": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/controlled-maintenance.md",
+      "title": "Controlled Maintenance Policy",
+      "maintenance_approval_process": "Technicians perform repairs as needed.",
+      "records_retention": "Records kept informally in a shared drive.",
+      "sanitisation_before_offsite": false,
+      "last_reviewed_at": "2026-06-01T00:00:00Z",
+      "signature_verified": false
+    }
+  ]
 }

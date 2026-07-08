@@ -1,11 +1,16 @@
 {
-  "fedramp_mp_6_media_sanitisation": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/media-sanitisation.md",
+      "title": "Media Sanitisation Policy",
+      "sanitisation_method": "purge",
+      "sanitisation_standard": "NIST SP 800-88 Rev 1",
+      "verification_process": "Each sanitisation is verified by a second technician using a read-back sampling tool, and a certificate of sanitisation is recorded in the asset-disposal log.",
+      "last_reviewed_at": "2026-06-10T00:00:00Z",
+      "signature_verified": true,
+      "approved_by": "ciso@acme.com"
+    }
+  ]
 }

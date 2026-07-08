@@ -1,8 +1,26 @@
 {
-  "fedramp_sc_8_transmission_confidentiality_and_integrity": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-19T00:00:00Z",
+  "buckets": [
+    {
+      "name": "fedramp-artifacts",
+      "policy": {
+        "Statement": [
+          {
+            "Effect": "Deny",
+            "Action": "s3:*",
+            "Principal": "*",
+            "Condition": {"Bool": {"aws:SecureTransport": "false"}}
+          }
+        ]
+      }
+    }
+  ],
+  "load_balancers": [
+    {
+      "name": "public-alb",
+      "listeners": [
+        {"protocol": "HTTPS", "port": 443, "ssl_policy": "ELBSecurityPolicy-TLS13-1-2-2021-06"}
+      ]
+    }
+  ]
 }

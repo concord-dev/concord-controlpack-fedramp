@@ -1,8 +1,40 @@
 {
-  "fedramp_ac_2_account_management": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-28T10:00:00Z",
+  "generated_at": "2026-06-28T09:55:00Z",
+  "users": [
+    {
+      "user": "<root_account>",
+      "arn": "arn:aws:iam::123456789012:root",
+      "enabled": true,
+      "password_enabled": false,
+      "password_last_used_days_ago": 210,
+      "mfa_active": true,
+      "access_keys": []
+    },
+    {
+      "user": "alice.nguyen",
+      "arn": "arn:aws:iam::123456789012:user/alice.nguyen",
+      "enabled": true,
+      "password_enabled": true,
+      "password_last_used_days_ago": 2,
+      "mfa_active": true,
+      "access_keys": [],
+      "tags": {
+        "owner": "alice.nguyen@agency.gov"
+      }
+    },
+    {
+      "user": "deploy-bot",
+      "arn": "arn:aws:iam::123456789012:user/deploy-bot",
+      "enabled": true,
+      "password_enabled": false,
+      "password_last_used_days_ago": 365,
+      "access_keys": [
+        {"active": true, "last_used_days_ago": 1}
+      ],
+      "tags": {
+        "owner": "platform-team@agency.gov"
+      }
+    }
+  ]
 }

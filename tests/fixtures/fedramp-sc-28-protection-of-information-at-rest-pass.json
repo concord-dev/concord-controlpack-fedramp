@@ -1,8 +1,12 @@
 {
-  "fedramp_sc_28_protection_of_information_at_rest": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-15T00:00:00Z",
+  "buckets": [
+    {"name": "fedramp-data", "encryption": {"configured": true, "rules": [{"sse_algorithm": "aws:kms"}]}}
+  ],
+  "rds_instances": [
+    {"identifier": "fedramp-postgres", "encryption": {"configured": true}}
+  ],
+  "ebs_volumes": [
+    {"volume_id": "vol-0a1b2c3d4e5f60718", "encryption": {"configured": true}}
+  ]
 }

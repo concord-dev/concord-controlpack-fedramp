@@ -6,33 +6,62 @@ metadata:
   name: fedramp-sc-28-protection-of-information-at-rest
   title: Confidentiality and integrity of information at rest are protected
   framework: fedramp
+  category: System and Communications Protection
   severity: critical
-  tags: []
+  tags:
+    - fedramp
+    - system-and-communications-protection
+    - encryption
+    - encryption-at-rest
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-SC-28-protection-of-information-at-rest enforces.
+    NIST 800-53 Rev 5 SC-28 (Protection of Information at Rest), with
+    enhancement SC-28(1) (Cryptographic Protection), as required by the FedRAMP
+    Moderate baseline, requires the system to protect the confidentiality and
+    integrity of information at rest. Concord verifies that every data store in
+    the authorization boundary has encryption-at-rest enabled: S3 buckets, RDS
+    instances, and EBS volumes must each report an active encryption
+    configuration. Any store without encryption-at-rest is reported
+    individually.
+  rationale: |
+    Encryption-at-rest is the primary safeguard against disclosure of federal
+    information from lost media, snapshot exfiltration, or misconfigured storage
+    access, and unencrypted storage is one of the most common and highest-impact
+    findings during a FedRAMP assessment. Evaluating S3, RDS, and EBS separately
+    and per-resource means a single unencrypted bucket or volume fails the
+    control rather than being masked by an otherwise-encrypted estate, and the
+    fail-closed default treats a store with no reported encryption state as
+    non-compliant.
 
   evidence:
-    - id: fedramp_sc_28_protection_of_information_at_rest
+    - id: encryption_at_rest
       source: aws
-      type: aws_resource_inventory
+      type: storage_encryption
       fixture: ../tests/fixtures/fedramp-sc-28-protection-of-information-at-rest-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_sc_28_protection_of_information_at_rest
+    package: concord.fedramp.sc_28
     file: ../policies/fedramp-sc-28-protection-of-information-at-rest.rego
 
   remediation:
     runbook: docs/remediation/fedramp-sc-28-protection-of-information-at-rest.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "SC-28"
+      - "SC-28(1)"
+    hipaa:
+      - "164.312(a)(2)(iv)"
+    soc2:
+      - "CC6.1"
+
+  status: stable
+  blocking: true

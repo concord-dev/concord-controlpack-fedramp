@@ -1,11 +1,19 @@
 {
-  "fedramp_ir_8_incident_response_plan": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/incident-response-plan.md",
+      "title": "Incident Response Plan",
+      "owner": "Chief Information Security Officer",
+      "plan_scope": "Covers the production system.",
+      "roles_responsibilities": "",
+      "communication_plan": "",
+      "last_reviewed_at": "2026-06-05",
+      "review_age_days": 30,
+      "last_tested_at": "2022-12-01",
+      "test_age_days": 1310,
+      "signature_verified": false
+    }
+  ]
 }

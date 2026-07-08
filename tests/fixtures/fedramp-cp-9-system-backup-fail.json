@@ -1,8 +1,29 @@
 {
-  "fedramp_cp_9_system_backup": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "rds_instances": [
+    {
+      "identifier": "fedramp-postgres",
+      "tags": {
+        "fedramp": "true"
+      },
+      "backup_retention_period": 7
+    }
+  ],
+  "dynamodb_tables": [
+    {
+      "name": "fedramp-sessions",
+      "tags": {
+        "fedramp": "true"
+      },
+      "point_in_time_recovery_enabled": false
+    }
+  ],
+  "backup_vaults": [
+    {
+      "name": "fedramp-vault",
+      "holds_in_scope_data": true,
+      "locked": false,
+      "restore_test_age_days": 900
+    }
+  ]
 }

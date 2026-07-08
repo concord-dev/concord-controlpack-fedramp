@@ -4,37 +4,72 @@ kind: Control
 metadata:
   id: FEDRAMP-CP-10-system-recovery-and-reconstitution
   name: fedramp-cp-10-system-recovery-and-reconstitution
-  title: System recovery and reconstitution procedures are documented and tested
+  title: System recovery and reconstitution procedures are current, signed, and tested
   framework: fedramp
+  category: Contingency Planning
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - contingency-planning
+    - disaster-recovery
+    - policy
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-CP-10-system-recovery-and-reconstitution enforces.
+    NIST SP 800-53 Rev 5 CP-10 (System Recovery and Reconstitution) requires
+    the organization to provide for the recovery and reconstitution of the
+    system to a known state after a disruption, compromise, or failure. FedRAMP
+    Moderate expects documented, tested procedures that restore the system to
+    an operational state (recovery) and return it to a fully secure, verified
+    configuration (reconstitution). Concord reads the version-controlled
+    recovery-and-reconstitution procedures from the repository and confirms
+    they declare the recovery procedures, the reconstitution steps, a recent
+    test, and a recent signed review.
+
+  rationale: |
+    Recovery restores service; reconstitution proves the restored system is
+    trustworthy — patched to the current baseline, free of attacker footholds,
+    and validated against the approved configuration. Teams that document
+    recovery but skip reconstitution routinely bring a system back only to
+    reintroduce the very weakness that caused the outage. CP-10 requires both,
+    and requires them to be tested. Concord anchors the evidence to a
+    git-versioned document whose review freshness, test freshness, and cosign
+    signature are verified on every run, so an assessor sees the procedures are
+    complete, exercised, and approved.
 
   evidence:
-    - id: fedramp_cp_10_system_recovery_and_reconstitution
-      source: attestation
-      type: policy_attestation
+    - id: recovery_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/fedramp-cp-10-system-recovery-and-reconstitution-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/security/fedramp/system-recovery-reconstitution.md"
+        parse: frontmatter
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_cp_10_system_recovery_and_reconstitution
+    package: concord.fedramp.cp_10
     file: ../policies/fedramp-cp-10-system-recovery-and-reconstitution.rego
 
   remediation:
     runbook: docs/remediation/fedramp-cp-10-system-recovery-and-reconstitution.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "CP-10"
+    soc2:
+      - "A1.3"
+      - "CC7.5"
+    iso27001:
+      - "A.5.29"
+      - "A.5.30"
+
+  status: stable
+  blocking: true

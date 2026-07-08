@@ -1,11 +1,14 @@
 {
-  "fedramp_mp_4_media_storage": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/media-storage.md",
+      "title": "System Media Storage Policy",
+      "storage_controls": "Media is stored in the server room.",
+      "access_restrictions": "Data-centre staff have access.",
+      "last_reviewed_at": "2026-06-05T00:00:00Z",
+      "signature_verified": false
+    }
+  ]
 }

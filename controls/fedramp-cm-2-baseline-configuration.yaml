@@ -4,35 +4,67 @@ kind: Control
 metadata:
   id: FEDRAMP-CM-2-baseline-configuration
   name: fedramp-cm-2-baseline-configuration
-  title: Current baseline configuration of the system is documented and reviewed
+  title: A current baseline configuration of the system is maintained
   framework: fedramp
+  category: Configuration Management
   severity: high
-  tags: []
+  tags:
+    - fedramp
+    - configuration-management
+    - baseline
+    - aws-config
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-CM-2-baseline-configuration enforces.
+    NIST 800-53 Rev 5 CM-2 (Baseline Configuration), required by the FedRAMP
+    Moderate baseline, requires the organization to develop, document, and
+    maintain a current baseline configuration of the system. In AWS this is
+    proven by the AWS Config recorder being enabled and recording in every
+    active region, so the configuration of all resources is continuously and
+    authoritatively captured. Concord reads the Config recorder status and
+    denies any active region where the recorder is absent or not recording, and
+    denies when no active regions are reported at all. An absent evidence
+    payload denies.
+
+  rationale: |
+    A baseline configuration provides no assurance unless the current
+    configuration of every resource is continuously captured and comparable to
+    it. The AWS Config recorder produces exactly that authoritative,
+    tamper-evident record; if it is disabled in a region, configuration drift
+    there is invisible and no baseline can be maintained for those resources.
+    Requiring recording in every active region prevents the false assurance of a
+    baseline that only covers part of the estate. The control fails closed —
+    missing evidence or a non-recording region denies rather than assuming
+    coverage.
 
   evidence:
-    - id: fedramp_cm_2_baseline_configuration
+    - id: config_recorders
       source: aws
-      type: aws_resource_inventory
+      type: config_recorder_status
       fixture: ../tests/fixtures/fedramp-cm-2-baseline-configuration-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_cm_2_baseline_configuration
+    package: concord.fedramp.cm_2_baseline
     file: ../policies/fedramp-cm-2-baseline-configuration.rego
 
   remediation:
     runbook: docs/remediation/fedramp-cm-2-baseline-configuration.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "CM-2"
+      - "CM-8"
+    pci_dss:
+      - "2.2.1"
+    cis_aws:
+      - "3.5"
+
+  status: stable
+  blocking: true

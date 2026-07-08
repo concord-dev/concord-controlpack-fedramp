@@ -4,35 +4,70 @@ kind: Control
 metadata:
   id: FEDRAMP-CP-9-system-backup
   name: fedramp-cp-9-system-backup
-  title: System backups are conducted and tested per requirements
+  title: In-scope data stores have automated, tamper-resistant, tested backups
   framework: fedramp
+  category: Contingency Planning
   severity: critical
-  tags: []
+  tags:
+    - fedramp
+    - nist-800-53
+    - contingency-planning
+    - backup
+    - aws
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what FEDRAMP-CP-9-system-backup enforces.
+    NIST SP 800-53 Rev 5 CP-9 (System Backup), with enhancement CP-9(1)
+    (Testing for Reliability and Integrity), requires the organization to
+    conduct backups of user-level and system-level information at defined
+    frequencies and to test backup information to verify recovery. Concord
+    verifies that every in-scope data store (tagged fedramp="true") has
+    automated backups enabled with a FedRAMP-grade retention floor, that
+    point-in-time recovery is enabled for DynamoDB, and that AWS Backup vaults
+    holding in-scope data are vault-locked for tamper-resistance and have had a
+    successful restore test within the last year.
+
+  rationale: |
+    Backups are the last line of defense against ransomware, accidental
+    deletion, and silent corruption, but only if they are automated, retained
+    long enough to outlast a slow-burn compromise, protected from tampering,
+    and actually restorable. Ransomware crews routinely delete or encrypt the
+    backups first, so CP-9 pairs automated backups with vault locking, and
+    CP-9(1) demands proof that a restore has been exercised, because an
+    untested backup is a hypothesis, not a recovery capability. Concord reads
+    the live AWS backup posture so this is verified continuously rather than
+    asserted once at authorization.
 
   evidence:
-    - id: fedramp_cp_9_system_backup
+    - id: system_backups
       source: aws
-      type: aws_resource_inventory
+      type: backup_status
       fixture: ../tests/fixtures/fedramp-cp-9-system-backup-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.fedramp.fedramp_cp_9_system_backup
+    package: concord.fedramp.cp_9
     file: ../policies/fedramp-cp-9-system-backup.rego
 
   remediation:
     runbook: docs/remediation/fedramp-cp-9-system-backup.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 4h
 
-  status: draft
-  blocking: false
+  mappings:
+    nist_800_53:
+      - "CP-9"
+      - "CP-9(1)"
+    soc2:
+      - "A1.2"
+    iso27001:
+      - "A.8.13"
+    hipaa:
+      - "164.308(a)(7)(ii)(A)"
+
+  status: stable
+  blocking: true

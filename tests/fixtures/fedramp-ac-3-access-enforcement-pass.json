@@ -1,8 +1,52 @@
 {
-  "fedramp_ac_3_access_enforcement": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-28T12:00:00Z",
+  "identities": [
+    {
+      "name": "records-processor",
+      "type": "role",
+      "attached_policies": [
+        {
+          "policy_name": "RecordsReadWrite",
+          "arn": "arn:aws:iam::123456789012:policy/RecordsReadWrite",
+          "is_aws_managed": false,
+          "document": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["s3:GetObject", "s3:PutObject"],
+                "Resource": "arn:aws:s3:::agency-records/*"
+              },
+              {
+                "Effect": "Deny",
+                "Action": "iam:*",
+                "Resource": "*"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "read-only-auditor",
+      "type": "user",
+      "attached_policies": [
+        {
+          "policy_name": "SecurityAudit",
+          "arn": "arn:aws:iam::123456789012:policy/SecurityAudit",
+          "is_aws_managed": false,
+          "document": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["config:Get*", "config:Describe*"],
+                "Resource": "arn:aws:config:us-east-1:123456789012:*"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }

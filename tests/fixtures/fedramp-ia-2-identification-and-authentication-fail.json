@@ -1,8 +1,32 @@
 {
-  "fedramp_ia_2_identification_and_authentication": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "generated_at": "2026-06-20T09:55:00Z",
+  "users": [
+    {
+      "user": "<root_account>",
+      "arn": "arn:aws:iam::123456789012:root",
+      "password_enabled": true,
+      "password_last_used_days_ago": 3,
+      "mfa_active": true,
+      "access_keys": [
+        { "key_num": "1", "active": true }
+      ]
+    },
+    {
+      "user": "admin",
+      "arn": "arn:aws:iam::123456789012:user/admin",
+      "password_enabled": true,
+      "password_last_used_days_ago": 0,
+      "mfa_active": true,
+      "access_keys": []
+    },
+    {
+      "user": "shared-ops",
+      "arn": "arn:aws:iam::123456789012:user/shared-ops",
+      "password_enabled": true,
+      "password_last_used_days_ago": 5,
+      "mfa_active": true,
+      "access_keys": []
+    }
+  ]
 }

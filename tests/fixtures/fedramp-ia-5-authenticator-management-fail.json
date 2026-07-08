@@ -1,8 +1,15 @@
 {
-  "fedramp_ia_5_authenticator_management": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
+  "fetched_at": "2026-06-15T10:00:00Z",
+  "configured": true,
+  "policy": {
+    "minimum_password_length": 8,
+    "require_symbols": false,
+    "require_numbers": true,
+    "require_uppercase_characters": true,
+    "require_lowercase_characters": true,
+    "allow_users_to_change_password": true,
+    "expire_passwords": true,
+    "max_password_age": 365,
+    "password_reuse_prevention": 3
   }
 }

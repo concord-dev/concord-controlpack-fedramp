@@ -1,11 +1,14 @@
 {
-  "fedramp_ra_3_risk_assessment": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/risk-assessment.md",
+      "title": "System Risk Assessment",
+      "scope": "All information systems and components within the FedRAMP authorization boundary",
+      "last_assessment_at": "2026-06-01T00:00:00Z",
+      "findings_tracked": "Findings recorded and tracked to closure in the POA&M",
+      "signature_verified": false
+    }
+  ]
 }

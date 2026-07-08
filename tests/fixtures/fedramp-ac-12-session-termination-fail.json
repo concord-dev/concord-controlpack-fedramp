@@ -1,8 +1,20 @@
 {
-  "fedramp_ac_12_session_termination": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "fetched_at": "2026-06-28T14:00:00Z",
+  "roles": [
+    {
+      "role_name": "legacy-console",
+      "arn": "arn:aws:iam::123456789012:role/legacy-console",
+      "tags": {
+        "session_type": "interactive"
+      },
+      "max_session_duration_seconds": 43200
+    },
+    {
+      "role_name": "support-desk",
+      "arn": "arn:aws:iam::123456789012:role/support-desk",
+      "tags": {
+        "session_type": "interactive"
+      }
+    }
+  ]
 }

@@ -1,8 +1,20 @@
 {
-  "fedramp_ac_17_remote_access": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "fetched_at": "2026-06-28T08:30:00Z",
+  "groups": [
+    {
+      "id": "sg-bastion",
+      "description": "Bastion host - encrypted admin only from VPN range",
+      "ingress_rules": [
+        {"protocol": "tcp", "from_port": 22, "to_port": 22, "cidr": "10.0.0.0/8", "admin": true, "encrypted": true},
+        {"protocol": "tcp", "from_port": 3389, "to_port": 3389, "cidr": "10.0.0.0/8", "admin": true, "encrypted": true}
+      ]
+    },
+    {
+      "id": "sg-web",
+      "description": "Public HTTPS front end",
+      "ingress_rules": [
+        {"protocol": "tcp", "from_port": 443, "to_port": 443, "cidr": "0.0.0.0/0"}
+      ]
+    }
+  ]
 }

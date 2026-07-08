@@ -1,8 +1,18 @@
 {
-  "fedramp_ac_4_information_flow_enforcement": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": true, "reason": "" }
-    ]
-  }
+  "scanned_paths": ["docs/security/fedramp"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/security/fedramp/information-flow-enforcement.md",
+      "title": "Information Flow Enforcement Policy",
+      "owner": "System Security Officer",
+      "flow_control_policy": "Traffic may flow only along explicitly approved paths: internet -> public ALB (443 only) -> app tier -> data tier; the data tier accepts connections solely from the app tier security group and denies all egress to the internet. Deny-by-default is the baseline for every zone boundary.",
+      "boundary_definitions": "Three security zones inside the authorization boundary: public DMZ (10.0.0.0/24), private application tier (10.0.10.0/24), and restricted data tier (10.0.20.0/24), each mapped to a dedicated VPC subnet and moderate-impact data-classification tier.",
+      "enforcement_mechanisms": "AWS security groups and network ACLs enforce zone-to-zone flows, an egress proxy mediates outbound HTTP(S), and a web application firewall inspects north-south traffic; VPC flow logs are shipped to the SIEM for reconciliation against this approved-flow matrix.",
+      "last_reviewed_at": "2026-06-01",
+      "review_age_days": 37,
+      "approved_by": "ciso@acme.com",
+      "signature_verified": true
+    }
+  ]
 }
