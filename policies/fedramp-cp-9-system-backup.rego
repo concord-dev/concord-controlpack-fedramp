@@ -59,3 +59,23 @@ restore_tested_recently(vault) if {
 in_scope(resource) if {
 	resource.tags.fedramp == "true"
 }
+
+# doc 31 §4 — no fail-open tag gates: a resource with no 'fedramp' tag is neither confirmed in-scope
+# nor out-of-scope, so every deny above skips it and it would pass silently.
+# Warn on the unclassified resource instead of ignoring it.
+
+warn contains msg if {
+	some resource in input.system_backups.rds_instances
+	not classified(resource)
+	msg := sprintf("RDS instance %q has no fedramp tag, so this control's checks did not apply to it — tag fedramp=true to bring it into FedRAMP-scoped scope or fedramp=false to confirm it is out of scope", [resource.identifier])
+}
+
+warn contains msg if {
+	some resource in input.system_backups.dynamodb_tables
+	not classified(resource)
+	msg := sprintf("DynamoDB table %q has no fedramp tag, so this control's checks did not apply to it — tag fedramp=true to bring it into FedRAMP-scoped scope or fedramp=false to confirm it is out of scope", [resource.name])
+}
+
+classified(resource) if resource.tags.fedramp == "true"
+
+classified(resource) if resource.tags.fedramp == "false"
