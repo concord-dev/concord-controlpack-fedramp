@@ -34,7 +34,7 @@ spec:
     exactly the manipulation AU-9 is meant to prevent, so Concord fails closed
     when no trail is present and denies per trail for each missing safeguard.
   evidence:
-    - id: cloudtrail
+    - id: audit_trail
       source: aws
       type: audit_trail_status
       fixture: ../tests/fixtures/fedramp-au-9-protection-of-audit-information-pass.json

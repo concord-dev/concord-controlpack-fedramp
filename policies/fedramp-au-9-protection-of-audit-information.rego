@@ -10,15 +10,15 @@ import rego.v1
 # rest), and stores its logs in an S3 bucket that is not publicly accessible (so
 # access is restricted). Fail closed when no trail is present.
 
-trails := input.cloudtrail.trails
+trails := input.audit_trail.cloudtrail.trails
 
 deny contains msg if {
-	not input.cloudtrail
+	not input.audit_trail
 	msg := "no CloudTrail evidence collected"
 }
 
 deny contains msg if {
-	input.cloudtrail
+	input.audit_trail
 	count(trails) == 0
 	msg := "no CloudTrail trail present; audit information cannot be shown to be protected — failing closed (NIST 800-53 AU-9 / FedRAMP Moderate)"
 }
